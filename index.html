@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth bg-[#030305]">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Premium Typography: Inter (closest free alternative to Neue Haas Grotesk) -->
+    <!-- Premium Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;800;900&display=swap" rel="stylesheet">
@@ -43,159 +43,145 @@
             background-color: #030305;
             color: #ffffff;
             overflow-x: hidden;
-            /* Respect reduced motion */
-            @media (prefers-reduced-motion: reduce) {
-                * {
-                    animation-duration: 0.01ms !important;
-                    animation-iteration-count: 1 !important;
-                    transition-duration: 0.01ms !important;
-                    scroll-behavior: auto !important;
-                }
-            }
+            margin: 0;
         }
 
-        /* 1. Fine Grain / Noise Texture */
-        .noise-overlay {
+        /* 1. Highly Visible Grid Background */
+        .bg-grid {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0.04;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-
-        /* 2. Thin Animated Grid Lines */
-        .grid-background {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: -10vh; left: -10vw;
+            width: 120vw; height: 120vh;
             background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 4rem 4rem;
-            background-position: center center;
+                linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+            background-size: 60px 60px;
             z-index: -3;
-            transform: translate(calc(var(--mouse-x) * 0.5), calc(var(--mouse-y) * 0.5));
+            /* Parallax transform */
+            transform: translate(var(--mouse-x), var(--mouse-y));
             transition: transform 0.1s ease-out;
         }
 
-        /* 3. Occasional Glowing Horizontal Scan Lines */
-        .scan-line {
-            position: fixed;
-            top: -100px;
-            left: 0;
-            width: 100vw;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.5), transparent);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
-            opacity: 0.4;
-            z-index: -1;
-            animation: scan 8s linear infinite;
-        }
-
-        @keyframes scan {
-            0% { top: -100px; opacity: 0; }
-            10% { opacity: 0.4; }
-            90% { opacity: 0.4; }
-            100% { top: 100vh; opacity: 0; }
-        }
-
-        /* 4. Cinematic Light Fields (Slow moving radial gradients) */
-        .ambient-light {
+        /* 2. Intense Ambient Orbs */
+        .orb {
             position: fixed;
             border-radius: 50%;
-            filter: blur(120px);
+            filter: blur(100px);
             z-index: -2;
-            opacity: 0.4;
-            transform: translate(var(--mouse-x), var(--mouse-y));
+            opacity: 0.6; /* Cranked up opacity */
+            mix-blend-screen: screen;
             transition: transform 0.2s ease-out;
-            animation: drift 20s infinite alternate ease-in-out;
+            animation: drift 15s infinite alternate ease-in-out;
         }
 
-        .light-cyan {
-            background: rgba(0, 240, 255, 0.15);
-            width: 50vw; height: 50vw;
-            top: -10%; left: -10%;
-            animation-delay: 0s;
+        .orb-cyan {
+            background: rgba(0, 240, 255, 0.4);
+            width: 600px; height: 600px;
+            top: -10%; left: -5%;
+            transform: translate(calc(var(--mouse-x) * 2), calc(var(--mouse-y) * 2));
         }
-        .light-violet {
-            background: rgba(138, 43, 226, 0.12);
-            width: 60vw; height: 60vw;
+        
+        .orb-violet {
+            background: rgba(138, 43, 226, 0.4);
+            width: 700px; height: 700px;
             bottom: -20%; right: -10%;
+            transform: translate(calc(var(--mouse-x) * -1.5), calc(var(--mouse-y) * -1.5));
             animation-delay: -5s;
         }
-        .light-emerald {
-            background: rgba(16, 185, 129, 0.08);
-            width: 40vw; height: 40vw;
+        
+        .orb-emerald {
+            background: rgba(16, 185, 129, 0.25);
+            width: 500px; height: 500px;
             top: 40%; left: 30%;
             animation-delay: -10s;
         }
-        .light-crimson {
-            background: rgba(220, 20, 60, 0.05);
-            width: 45vw; height: 45vw;
-            bottom: 10%; left: -10%;
-            animation-delay: -15s;
-        }
 
         @keyframes drift {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(5%, 5%) scale(1.1); }
+            0% { margin-top: 0; margin-left: 0; scale: 1; }
+            100% { margin-top: 50px; margin-left: 50px; scale: 1.1; }
         }
 
-        /* 5. Staggered Cinematic Reveal Animations */
+        /* 3. Cinematic Scanline */
+        .scanline {
+            position: fixed;
+            left: 0;
+            top: -10vh;
+            width: 100vw;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.8), transparent);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+            z-index: 50;
+            pointer-events: none;
+            animation: scan 6s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: -10vh; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 110vh; opacity: 0; }
+        }
+
+        /* 4. Film Grain Noise (Base64 for reliability) */
+        .noise {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 40;
+            pointer-events: none;
+            opacity: 0.25;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* 5. Typography Reveals */
         .reveal {
             opacity: 0;
             transform: translateY(30px);
-            animation: revealUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        .reveal-delay-1 { animation-delay: 0.2s; }
-        .reveal-delay-2 { animation-delay: 0.5s; }
-        .reveal-delay-3 { animation-delay: 0.7s; }
-        .reveal-delay-4 { animation-delay: 0.9s; }
-        .reveal-delay-5 { animation-delay: 1.2s; }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+        .delay-5 { animation-delay: 1.2s; }
 
         @keyframes revealUp {
-            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Explore Indicator Animation */
-        @keyframes subtleBounce {
+        /* Explore Bounce */
+        .animate-bounce-slow {
+            animation: bounceSlow 2s infinite ease-in-out;
+        }
+        @keyframes bounceSlow {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(8px); }
+            50% { transform: translateY(10px); }
         }
-        .animate-subtle-bounce {
-            animation: subtleBounce 2s ease-in-out infinite;
-        }
-
     </style>
 </head>
-<body class="antialiased">
+<body>
 
-    <!-- GLOBAL ENVIRONMENT -->
-    <div class="noise-overlay"></div>
-    <div class="grid-background"></div>
-    <div class="scan-line"></div>
-    
-    <div class="ambient-light light-cyan"></div>
-    <div class="ambient-light light-violet"></div>
-    <div class="ambient-light light-emerald"></div>
-    <div class="ambient-light light-crimson"></div>
+    <!-- VISUAL EFFECTS LAYER -->
+    <div class="bg-grid"></div>
+    <div class="orb orb-cyan"></div>
+    <div class="orb orb-violet"></div>
+    <div class="orb orb-emerald"></div>
+    <div class="scanline"></div>
+    <div class="noise"></div>
 
     <!-- ==========================================
          SECTION 01 — HERO
          ========================================== -->
-    <section id="hero" class="relative min-h-screen flex flex-col justify-center px-6 sm:px-12 lg:px-24">
-        <div class="max-w-7xl w-full mx-auto z-10 pt-20">
+    <section id="hero" class="relative min-h-screen flex flex-col justify-center px-6 sm:px-12 lg:px-24 z-10">
+        <div class="max-w-7xl w-full mx-auto pt-20">
             
             <!-- Eyebrow -->
-            <div class="reveal reveal-delay-1 mb-8">
-                <span class="font-sans text-[10px] md:text-xs tracking-[0.3em] text-gray-400 uppercase border-l-2 border-cyan-500/50 pl-4">
+            <div class="reveal delay-1 mb-8">
+                <span class="font-sans text-[10px] md:text-xs tracking-[0.3em] text-gray-400 uppercase border-l-2 border-cyan-500 pl-4">
                     FINANCIAL CRIME • AML • EDD • FCC
                 </span>
             </div>
             
             <!-- Main Headline -->
-            <div class="reveal reveal-delay-2 flex flex-col mb-6">
+            <div class="reveal delay-2 flex flex-col mb-6">
                 <h1 class="font-sans font-light text-5xl md:text-7xl lg:text-[7rem] leading-[0.9] tracking-tight text-gray-200">
                     CHRISTOPHER
                 </h1>
@@ -205,14 +191,14 @@
             </div>
             
             <!-- Subhead -->
-            <div class="reveal reveal-delay-3 mb-10">
+            <div class="reveal delay-3 mb-10">
                 <h2 class="font-sans text-sm md:text-lg tracking-[0.15em] text-gray-300 font-medium">
                     AML RISK • FINANCIAL CRIME • EDD • BLOCKCHAIN COMPLIANCE
                 </h2>
             </div>
             
             <!-- Executive Statement -->
-            <div class="reveal reveal-delay-4 max-w-2xl">
+            <div class="reveal delay-4 max-w-2xl">
                 <p class="font-sans text-lg md:text-2xl text-gray-400 font-light leading-relaxed">
                     Building stronger financial crime controls through high-risk intelligence, enhanced due diligence and regulatory thinking.
                 </p>
@@ -221,26 +207,37 @@
         </div>
 
         <!-- EXPLORE Indicator -->
-        <div class="absolute bottom-12 left-1/2 -translate-x-1/2 reveal reveal-delay-5 z-20">
+        <div class="absolute bottom-12 left-1/2 -translate-x-1/2 reveal delay-5 z-20">
             <a href="#about" class="group flex flex-col items-center justify-center cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-300">
                 <span class="font-sans text-[10px] tracking-[0.3em] text-gray-400 uppercase mb-4 transition-colors group-hover:text-cyan-400">
                     Explore
                 </span>
-                <div class="w-[1px] h-12 bg-gray-600/50 relative overflow-hidden">
-                    <div class="w-full h-1/2 bg-cyan-400 absolute top-0 animate-subtle-bounce"></div>
+                <div class="w-[1px] h-16 bg-gray-600/50 relative overflow-hidden">
+                    <div class="w-full h-1/2 bg-cyan-400 absolute top-0 animate-bounce-slow shadow-[0_0_10px_rgba(0,240,255,0.8)]"></div>
                 </div>
             </a>
         </div>
     </section>
 
-    <!-- Placeholder for Section 2 (To allow scrolling) -->
-    <section id="about" class="min-h-screen flex items-center justify-center">
-        <!-- Content for Slide 2 will go here next -->
+    <!-- Placeholder for Section 2 (Allows scroll testing) -->
+    <section id="about" class="min-h-screen flex items-center justify-center bg-black/50 z-10 relative">
+        <h2 class="text-gray-500 font-sans tracking-widest">[ Slide 02 content will go here next ]</h2>
     </section>
 
-    <!-- Scripts -->
+    <!-- Interactive Parallax Script -->
     <script>
-        // Smooth scroll for the Explore button
+        document.addEventListener('mousemove', (e) => {
+            // Calculate mouse position relative to the center of the screen
+            // Dividing by 20 makes the movement noticeable but smooth
+            const x = (e.clientX - window.innerWidth / 2) / 20; 
+            const y = (e.clientY - window.innerHeight / 2) / 20;
+            
+            // Apply coordinates directly to the CSS variables
+            document.documentElement.style.setProperty('--mouse-x', `${x}px`);
+            document.documentElement.style.setProperty('--mouse-y', `${y}px`);
+        });
+
+        // Smooth scroll for the Explore link
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -248,17 +245,6 @@
                     behavior: 'smooth'
                 });
             });
-        });
-
-        // Subtle Mouse Parallax Effect for Background Elements
-        document.addEventListener('mousemove', (e) => {
-            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-            
-            const x = (e.clientX / window.innerWidth - 0.5) * 30; // Max 15px movement
-            const y = (e.clientY / window.innerHeight - 0.5) * 30;
-            
-            document.documentElement.style.setProperty('--mouse-x', `${x}px`);
-            document.documentElement.style.setProperty('--mouse-y', `${y}px`);
         });
     </script>
 </body>
