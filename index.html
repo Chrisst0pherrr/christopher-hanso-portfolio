@@ -48,7 +48,7 @@
             width: 12px;
             height: 12px;
             background: #00F0FF;
-            box-shadow: 0 0 12px #00F0FF, 0 0 24px #FF2A5F;
+            box-shadow: 0 0 16px #00F0FF, 0 0 28px #FF2A5F;
             border-radius: 50%;
             transform: translate(-50%, -50%);
             transition: transform 0.1s ease, width 0.3s, height 0.3s;
@@ -60,59 +60,86 @@
         }
 
         /* Glass Navigation */
-        .glass-nav {
+        let-nav {
             background: rgba(2, 2, 4, 0.85);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        /* Editorial Cards */
+        /* Glowing Cyan Sweep Scanline every 8s */
+        .scanline {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0,240,255,0.8), transparent);
+            opacity: 0.5;
+            z-index: 100;
+            pointer-events: none;
+            animation: scan 8s linear infinite;
+        }
+        @keyframes scan { 0% { top: -10vh; } 100% { top: 110vh; } }
+
+        /* Cinematic Editorial Cards */
         .editorial-card {
-            background: #0B0D11;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: linear-gradient(135deg, #0B0D11 0%, #07080B 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .editorial-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0,240,255,0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
         .editorial-card:hover {
-            border-color: rgba(0, 240, 255, 0.4);
-            transform: translateY(-3px);
-            box-shadow: 0 20px 40px -15px rgba(0, 240, 255, 0.15);
+            border-color: rgba(0, 240, 255, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px -15px rgba(0, 240, 255, 0.2);
+        }
+        .editorial-card:hover::before {
+            opacity: 1;
         }
 
-        /* Clean Non-Overlapping Name Typography */
-        .hero-name-block {
-            display: flex;
-            flex-direction: column;
-            gap: 0.2rem;
+        /* Massive Cinematic Name */
+        .hero-name-container {
+            position: relative;
+            width: 100%;
         }
         .hero-christopher {
-            font-size: clamp(1.8rem, 4.5vw, 4rem);
-            font-weight: 700;
-            letter-spacing: 0.05em;
+            font-size: clamp(2rem, 5vw, 5rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
             color: #94a3b8;
             text-transform: uppercase;
             line-height: 1;
+            text-shadow: 0 0 40px rgba(0,240,255,0.2);
         }
         .hero-hanso {
-            font-size: clamp(3.5rem, 9vw, 8.5rem);
+            font-size: clamp(4rem, 12.5vw, 12rem);
             font-weight: 900;
-            letter-spacing: -0.04em;
-            line-height: 0.9;
-            color: #ffffff;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            letter-spacing: -0.05em;
+            line-height: 0.85;
+            background: linear-gradient(135deg, #ffffff 30%, #00f0ff 90%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
         }
 
-        /* Rotating 3D Globe */
+        /* 3D Rotating Globe */
         .rotating-globe {
             position: absolute;
-            right: 5%;
-            top: 15%;
-            width: 400px;
-            height: 400px;
-            opacity: 0.07;
+            right: 2%;
+            top: 10%;
+            width: 480px;
+            height: 480px;
+            opacity: 0.12;
             pointer-events: none;
             z-index: 0;
-            animation: spinGlobe 40s linear infinite;
+            animation: spinGlobe 45s linear infinite;
         }
         @keyframes spinGlobe { 100% { transform: rotate(360deg); } }
 
@@ -135,9 +162,10 @@
 <body class="antialiased selection:bg-cyan selection:text-black">
 
     <div class="cursor-sparkle" id="cursor"></div>
+    <div class="scanline"></div>
 
     <!-- NAVIGATION -->
-    <nav class="fixed top-0 w-full z-50 glass-nav px-6 md:px-12 py-5">
+    <nav class="fixed top-0 w-full z-50 bg-[#020204]/90 backdrop-blur-md border-b border-white/10 px-6 md:px-12 py-5">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <a href="#hero" class="font-mono text-xs tracking-[0.25em] text-white hover:text-cyan transition-colors">
                 CHRISTOPHER HANSO
@@ -158,6 +186,7 @@
     <!-- 01 — HERO -->
     <section id="hero" class="relative min-h-screen flex flex-col justify-between pt-32 pb-16 px-6 md:px-12 overflow-hidden">
         
+        <!-- Rotating 3D Globe -->
         <svg class="rotating-globe hidden lg:block" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="48" fill="none" stroke="#00F0FF" stroke-width="0.3"/>
             <ellipse cx="50" cy="50" rx="20" ry="48" fill="none" stroke="#00F0FF" stroke-width="0.3"/>
@@ -169,43 +198,33 @@
 
         <div class="max-w-7xl mx-auto w-full grid lg:grid-cols-12 gap-8 items-center z-10 my-auto">
             
-            <div class="lg:col-span-8 space-y-6">
+            <div class="lg:col-span-10 space-y-6">
                 <!-- Eyebrow & Status -->
                 <div class="flex flex-wrap items-center gap-4 reveal-up">
                     <span class="font-mono text-[10px] md:text-xs tracking-[0.3em] text-gray-400 uppercase">
                         01 / 05 &nbsp;•&nbsp; FINANCIAL CRIME • AML • EDD • FCC
                     </span>
-                    <!-- Australian PR Status Indicator -->
                     <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-cyan/30 backdrop-blur-md shadow-[0_0_15px_rgba(0,240,255,0.15)]">
                         <span class="w-2 h-2 rounded-full bg-emerald animate-pulse"></span>
                         <span class="font-mono text-[11px] tracking-widest text-white uppercase font-medium">AUSTRALIAN PR APPLICANT 🇦🇺 (189/190 PATHWAY • 2027)</span>
                     </div>
                 </div>
 
-                <!-- Clean Non-Overlapping Name Block -->
-                <div class="hero-name-block reveal-up" style="transition-delay: 0.1s;">
+                <!-- Massive Cinematic Name (Desktop Full Span) -->
+                <div class="hero-name-container reveal-up" style="transition-delay: 0.1s;">
                     <div class="hero-christopher">CHRISTOPHER</div>
                     <div class="hero-hanso">HANSO<span class="text-cyan">.</span></div>
                 </div>
 
-                <!-- Subhead & Executive Statement -->
-                <div class="space-y-4 max-w-2xl reveal-up" style="transition-delay: 0.2s;">
-                    <p class="font-mono text-xs md:text-sm tracking-[0.15em] text-cyan uppercase font-medium">
+                <!-- Subhead & Statement -->
+                <div class="space-y-4 max-w-3xl reveal-up" style="transition-delay: 0.2s;">
+                    <p class="font-mono text-xs md:text-sm tracking-[0.15em] text-cyan uppercase font-semibold">
                         AML RISK • FINANCIAL CRIME • EDD • BLOCKCHAIN COMPLIANCE
                     </p>
-                    <p class="text-base md:text-xl text-gray-300 font-light leading-relaxed">
+                    <p class="text-lg md:text-2xl text-gray-200 font-light leading-relaxed">
                         Building stronger financial crime controls through intelligence, investigation and risk.
                     </p>
                 </div>
-            </div>
-
-            <!-- Technical Readout Pill -->
-            <div class="lg:col-span-4 hidden lg:flex flex-col justify-end space-y-2 font-mono text-[11px] text-gray-400 border-l border-white/10 pl-8 reveal-up" style="transition-delay: 0.3s;">
-                <div class="text-white font-bold">REGIONAL COVERAGE:</div>
-                <div>• APAC / EMEA / MENA</div>
-                <div>• AUSTRAC OBLIGATIONS</div>
-                <div>• SMR / SAR REPORTING</div>
-                <div class="text-cyan pt-2">STATUS: MLRO TRACK READY // 2026</div>
             </div>
         </div>
 
@@ -241,7 +260,7 @@
                     </h2>
                 </div>
                 <p class="font-mono text-xs text-gray-400 mt-4 md:mt-0 max-w-xs">
-                    Executive profile documenting operational mastery across Morgan Stanley and Currencies Direct.
+                    Executive profile documenting operational mastery across Morgan Stanley and Currencies Direct[cite: 4].
                 </p>
             </div>
 
@@ -257,14 +276,14 @@
                     </div>
                 </div>
 
-                <!-- Executive Summary Copy (Clean without citation tags) -->
+                <!-- Executive Summary Copy (Updated to 5+ Years Experience) -->
                 <div class="lg:col-span-7 space-y-8 reveal-up" style="transition-delay: 0.2s;">
-                    <div class="space-y-6 text-gray-300 text-lg md:text-xl font-light leading-relaxed">
+                    <div class="space-y-6 text-gray-200 text-lg md:text-xl font-light leading-relaxed">
                         <p>
-                            Financial crime compliance professional with <strong class="text-white font-semibold">4+ years</strong> across <strong class="text-white font-semibold">Morgan Stanley Wealth Management</strong> and <span class="text-white font-semibold">Currencies Direct</span>. Specializing in <strong class="text-white font-semibold">Enhanced Due Diligence (EDD)</strong> for High and High+ risk and UHNW/HNW clients across <span class="text-cyan font-medium">APAC, EMEA, and MENA</span>.
+                            Financial crime compliance professional with <strong class="text-white font-semibold">5+ years</strong> of comprehensive experience across <strong class="text-white font-semibold">Morgan Stanley Wealth Management</strong> and <span class="text-white font-semibold">Currencies Direct</span>[cite: 4]. Specializing in <strong class="text-white font-semibold">Enhanced Due Diligence (EDD)</strong> for High and High+ risk and UHNW/HNW clients across <span class="text-cyan font-medium">APAC, EMEA, and MENA</span>[cite: 4].
                         </p>
-                        <p class="text-gray-400 text-base">
-                            Worked directly with an Australian MLRO on <strong class="text-white font-semibold">SMR submissions</strong>, high-risk escalations, and strict <span class="text-white font-semibold">AUSTRAC obligations</span>. Subject matter expert for complex <strong class="text-white font-semibold">source of wealth / source of funds (SOW/SOF)</strong> reviews, analyst mentoring, and builder of <span class="text-cyan font-medium">AI-assisted Microsoft Copilot workflows</span> for AML research.
+                        <p class="text-gray-300 text-base">
+                            Worked directly with an Australian MLRO on <strong class="text-white font-semibold">SMR submissions</strong>, high-risk escalations, and strict <span class="text-white font-semibold">AUSTRAC obligations</span>[cite: 4]. Subject matter expert for complex <strong class="text-white font-semibold">source of wealth / source of funds (SOW/SOF)</strong> reviews, analyst mentoring, and builder of <span class="text-cyan font-medium">AI-assisted Microsoft Copilot workflows</span> for AML research[cite: 4].
                         </p>
                     </div>
 
@@ -292,7 +311,7 @@
         </div>
     </section>
 
-    <!-- 03 — OPERATIONAL FOOTPRINT (Fully Visible Text Contrast Fix) -->
+    <!-- 03 — OPERATIONAL FOOTPRINT (High Contrast Desktop Fix) -->
     <section id="footprint" class="py-32 px-6 md:px-12 border-t border-white/10 relative">
         <div class="max-w-7xl mx-auto">
             <div class="mb-20 reveal-up">
@@ -304,24 +323,24 @@
             </div>
 
             <!-- Timeline -->
-            <div class="relative pl-6 md:pl-12 border-l border-white/15 space-y-16">
+            <div class="relative pl-6 md:pl-12 border-l border-white/20 space-y-16">
                 
                 <!-- Morgan Stanley -->
                 <div class="relative reveal-up editorial-card p-8 md:p-12 rounded-2xl">
                     <span class="absolute -left-[31px] md:-left-[55px] top-10 w-4 h-4 rounded-full bg-cyan border-4 border-[#020204]"></span>
                     <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 pb-6 border-b border-white/10">
                         <div>
-                            <span class="font-mono text-xs text-cyan tracking-widest uppercase mb-2 block">MORGAN STANLEY • 2024 — PRESENT</span>
+                            <span class="font-mono text-xs text-cyan tracking-widest uppercase mb-2 block">MORGAN STANLEY • 2024 — PRESENT[cite: 4]</span>
                             <h3 class="font-sans font-bold text-2xl md:text-3xl text-white">Associate, EDD & Compliance</h3>
                             <p class="text-sm text-gray-300 mt-1">Wealth Management & High-Risk Intelligence</p>
                         </div>
-                        <span class="font-mono text-xs text-gray-300 mt-2 md:mt-0 bg-white/10 px-3.5 py-1.5 rounded">MUMBAI / GLOBAL</span>
+                        <span class="font-mono text-xs text-gray-200 mt-2 md:mt-0 bg-white/10 px-3.5 py-1.5 rounded">MUMBAI / GLOBAL[cite: 4]</span>
                     </div>
-                    <ul class="space-y-4 text-gray-200 text-sm md:text-base font-normal leading-relaxed">
-                        <li class="flex items-start"><span class="text-cyan font-mono mr-3 font-bold">01</span> Completed 220+ end-to-end EDD reviews on High and High+ risk wealth management clients, assessing complex ownership structures and trusts.</li>
-                        <li class="flex items-start"><span class="text-cyan font-mono mr-3 font-bold">02</span> Performed SOW/SOF analysis on 100+ Ultra High Net Worth (UHNW) individuals across APAC and EMEA.</li>
-                        <li class="flex items-start"><span class="text-cyan font-mono mr-3 font-bold">03</span> Designed three AI-assisted Microsoft Copilot workflows for negative-media analysis and public-company affiliation research.</li>
-                        <li class="flex items-start"><span class="text-cyan font-mono mr-3 font-bold">04</span> Act as SME for complex SOW/SOF reviews, advising analysts on investigation strategy and performing quality reviews.</li>
+                    <ul class="space-y-4 text-gray-100 text-base font-normal leading-relaxed">
+                        <li class="flex items-start"><span class="text-cyan font-mono mr-3 font-bold">01</span> Completed 220+ end-to-end EDD reviews on High and High+ risk wealth management clients, assessing complex ownership structures and trusts[cite: 4].</li>
+                        <li class="flex items-start"><span class="text-cyan font-mono mr-3 font-bold">02</span> Performed SOW/SOF analysis on 100+ Ultra High Net Worth (UHNW) individuals across APAC and EMEA[cite: 4].</li>
+                        <li class="flex items-start"><span class="text-cyan font-mono mr-3 font-bold">03</span> Designed three AI-assisted Microsoft Copilot workflows for negative-media analysis and public-company affiliation research[cite: 4].</li>
+                        <li class="flex items-start"><span class="text-cyan font-mono mr-3 font-bold">04</span> Act as SME for complex SOW/SOF reviews, advising analysts on investigation strategy and performing quality reviews[cite: 4].</li>
                     </ul>
                 </div>
 
@@ -330,16 +349,16 @@
                     <span class="absolute -left-[31px] md:-left-[55px] top-10 w-4 h-4 rounded-full bg-emerald border-4 border-[#020204]"></span>
                     <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 pb-6 border-b border-white/10">
                         <div>
-                            <span class="font-mono text-xs text-emerald tracking-widest uppercase mb-2 block">CURRENCIES DIRECT • 2022 — 2024</span>
+                            <span class="font-mono text-xs text-emerald tracking-widest uppercase mb-2 block">CURRENCIES DIRECT • 2022 — 2024[cite: 4]</span>
                             <h3 class="font-sans font-bold text-2xl md:text-3xl text-white">AML Compliance Officer</h3>
                             <p class="text-sm text-gray-300 mt-1">AUSTRAC Obligations & Cross-Border Compliance</p>
                         </div>
-                        <span class="font-mono text-xs text-gray-300 mt-2 md:mt-0 bg-white/10 px-3.5 py-1.5 rounded">MUMBAI / APAC / EMEA</span>
+                        <span class="font-mono text-xs text-gray-200 mt-2 md:mt-0 bg-white/10 px-3.5 py-1.5 rounded">MUMBAI / APAC / EMEA[cite: 4]</span>
                     </div>
-                    <ul class="space-y-4 text-gray-200 text-sm md:text-base font-normal leading-relaxed">
-                        <li class="flex items-start"><span class="text-emerald font-mono mr-3 font-bold">01</span> Worked directly with the Australian MLRO on high-risk escalations, SMR submissions and AUSTRAC regulatory obligations.</li>
-                        <li class="flex items-start"><span class="text-emerald font-mono mr-3 font-bold">02</span> Onboarded 3,000+ clients/users over two years, balancing customer growth with strict AML/CTF controls.</li>
-                        <li class="flex items-start"><span class="text-emerald font-mono mr-3 font-bold">03</span> Cleared 1,000+ sanctions screening hits (OFAC, UN, EU) and conducted adverse media investigations using World-Check.</li>
+                    <ul class="space-y-4 text-gray-100 text-base font-normal leading-relaxed">
+                        <li class="flex items-start"><span class="text-emerald font-mono mr-3 font-bold">01</span> Worked directly with the Australian MLRO on high-risk escalations, SMR submissions and AUSTRAC regulatory obligations[cite: 4].</li>
+                        <li class="flex items-start"><span class="text-emerald font-mono mr-3 font-bold">02</span> Onboarded 3,000+ clients/users over two years, balancing customer growth with strict AML/CTF controls[cite: 4].</li>
+                        <li class="flex items-start"><span class="text-emerald font-mono mr-3 font-bold">03</span> Cleared 1,000+ sanctions screening hits (OFAC, UN, EU) and conducted adverse media investigations using World-Check[cite: 4].</li>
                     </ul>
                 </div>
 
@@ -348,15 +367,15 @@
                     <span class="absolute -left-[31px] md:-left-[55px] top-10 w-4 h-4 rounded-full bg-gray-400 border-4 border-[#020204]"></span>
                     <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 pb-6 border-b border-white/10">
                         <div>
-                            <span class="font-mono text-xs text-gray-300 tracking-widest uppercase mb-2 block">FEDEX EXPRESS • 2021 — 2022</span>
+                            <span class="font-mono text-xs text-gray-300 tracking-widest uppercase mb-2 block">FEDEX EXPRESS • 2021 — 2022[cite: 4]</span>
                             <h3 class="font-sans font-bold text-2xl md:text-3xl text-white">Customer Service Specialist</h3>
                             <p class="text-sm text-gray-300 mt-1">Documentation & Risk Control Foundation</p>
                         </div>
-                        <span class="font-mono text-xs text-gray-300 mt-2 md:mt-0 bg-white/10 px-3.5 py-1.5 rounded">MUMBAI</span>
+                        <span class="font-mono text-xs text-gray-200 mt-2 md:mt-0 bg-white/10 px-3.5 py-1.5 rounded">MUMBAI[cite: 4]</span>
                     </div>
-                    <ul class="space-y-4 text-gray-200 text-sm md:text-base font-normal leading-relaxed">
-                        <li class="flex items-start"><span class="text-gray-300 font-mono mr-3 font-bold">01</span> Verified customer documentation against customs, export-control and anti-fraud procedures.</li>
-                        <li class="flex items-start"><span class="text-gray-300 font-mono mr-3 font-bold">02</span> Identified and escalated suspicious documentation and transaction patterns in accordance with regulatory protocols.</li>
+                    <ul class="space-y-4 text-gray-100 text-base font-normal leading-relaxed">
+                        <li class="flex items-start"><span class="text-gray-300 font-mono mr-3 font-bold">01</span> Verified customer documentation against customs, export-control and anti-fraud procedures[cite: 4].</li>
+                        <li class="flex items-start"><span class="text-gray-300 font-mono mr-3 font-bold">02</span> Identified and escalated suspicious documentation and transaction patterns in accordance with regulatory protocols[cite: 4].</li>
                     </ul>
                 </div>
 
@@ -364,66 +383,99 @@
         </div>
     </section>
 
-    <!-- 04 — FINANCIAL CRIME CAPABILITY -->
+    <!-- 04 — FINANCIAL CRIME CAPABILITY (Cinematic Interactive Redesign) -->
     <section id="capability" class="py-32 px-6 md:px-12 border-t border-white/10 relative">
         <div class="max-w-7xl mx-auto">
-            <div class="mb-20 reveal-up">
-                <span class="font-mono text-[11px] tracking-[0.25em] text-cyan uppercase block mb-4">04 / 05 • EXPERTISE MATRIX</span>
-                <h2 class="font-sans font-bold text-4xl md:text-6xl tracking-tight text-white">
-                    Financial Crime Capability
-                </h2>
+            <div class="mb-20 reveal-up flex flex-col md:flex-row md:items-end justify-between">
+                <div>
+                    <span class="font-mono text-[11px] tracking-[0.25em] text-cyan uppercase block mb-4">04 / 05 • EXPERTISE MATRIX</span>
+                    <h2 class="font-sans font-bold text-4xl md:text-6xl tracking-tight text-white">
+                        Financial Crime Capability
+                    </h2>
+                </div>
+                <div class="font-mono text-xs text-cyan mt-4 md:mt-0 bg-cyan/10 border border-cyan/30 px-4 py-2 rounded-lg">
+                    MLRO STANDARD // REGTECH INTEGRATED
+                </div>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 
-                <div class="editorial-card p-8 rounded-2xl space-y-6 reveal-up">
-                    <div class="font-mono text-xs text-cyan">01 // CORE</div>
-                    <h3 class="font-sans font-bold text-xl text-white">AML / FCC</h3>
-                    <div class="flex flex-wrap gap-2 font-mono text-xs text-gray-300">
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">EDD</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">KYC / CDD</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">AML / CTF</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">PEP Screening</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">Sanctions</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">Investigations</span>
+                <!-- Card 1 -->
+                <div class="editorial-card p-8 rounded-2xl space-y-8 reveal-up group">
+                    <div class="flex justify-between items-center">
+                        <span class="font-mono text-xs text-cyan">01 // CORE</span>
+                        <span class="w-2 h-2 rounded-full bg-cyan group-hover:scale-150 transition-transform"></span>
+                    </div>
+                    <div>
+                        <h3 class="font-sans font-bold text-2xl text-white mb-2">AML / FCC</h3>
+                        <p class="text-xs text-gray-400 font-mono">Core compliance & due diligence operations.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 font-mono text-xs">
+                        <span class="px-3 py-1.5 bg-cyan/10 text-cyan rounded-lg border border-cyan/30">EDD</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">KYC / CDD</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">AML / CTF</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">PEP Screening</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">Sanctions</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">Investigations</span>
                     </div>
                 </div>
 
-                <div class="editorial-card p-8 rounded-2xl space-y-6 reveal-up" style="transition-delay: 0.1s;">
-                    <div class="font-mono text-xs text-emerald">02 // GOVERNANCE</div>
-                    <h3 class="font-sans font-bold text-xl text-white">REGULATORY</h3>
-                    <div class="flex flex-wrap gap-2 font-mono text-xs text-gray-300">
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">AUSTRAC</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">FATF</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">OFAC</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">EU / UK HMT</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">UN Sanctions</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">SMR / SAR</span>
+                <!-- Card 2 -->
+                <div class="editorial-card p-8 rounded-2xl space-y-8 reveal-up group" style="transition-delay: 0.1s;">
+                    <div class="flex justify-between items-center">
+                        <span class="font-mono text-xs text-emerald">02 // GOVERNANCE</span>
+                        <span class="w-2 h-2 rounded-full bg-emerald group-hover:scale-150 transition-transform"></span>
+                    </div>
+                    <div>
+                        <h3 class="font-sans font-bold text-2xl text-white mb-2">REGULATORY</h3>
+                        <p class="text-xs text-gray-400 font-mono">Global statutory standards & reporting.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 font-mono text-xs">
+                        <span class="px-3 py-1.5 bg-emerald/10 text-emerald rounded-lg border border-emerald/30">AUSTRAC</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">FATF</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">OFAC</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">EU / UK HMT</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">UN Sanctions</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">SMR / SAR</span>
                     </div>
                 </div>
 
-                <div class="editorial-card p-8 rounded-2xl space-y-6 reveal-up" style="transition-delay: 0.2s;">
-                    <div class="font-mono text-xs text-amber">03 // ANALYSIS</div>
-                    <h3 class="font-sans font-bold text-xl text-white">INTELLIGENCE</h3>
-                    <div class="flex flex-wrap gap-2 font-mono text-xs text-gray-300">
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">SOW / SOF</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">Negative Media</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">Corporate Trees</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">OSINT</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">Risk Assessment</span>
+                <!-- Card 3 -->
+                <div class="editorial-card p-8 rounded-2xl space-y-8 reveal-up group" style="transition-delay: 0.2s;">
+                    <div class="flex justify-between items-center">
+                        <span class="font-mono text-xs text-amber">03 // ANALYSIS</span>
+                        <span class="w-2 h-2 rounded-full bg-amber group-hover:scale-150 transition-transform"></span>
+                    </div>
+                    <div>
+                        <h3 class="font-sans font-bold text-2xl text-white mb-2">INTELLIGENCE</h3>
+                        <p class="text-xs text-gray-400 font-mono">Advanced wealth & structural risk research.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 font-mono text-xs">
+                        <span class="px-3 py-1.5 bg-amber/10 text-amber rounded-lg border border-amber/30">SOW / SOF</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">Negative Media</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">Corporate Trees</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">OSINT</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">Risk Assessment</span>
                     </div>
                 </div>
 
-                <div class="editorial-card p-8 rounded-2xl space-y-6 reveal-up" style="transition-delay: 0.3s;">
-                    <div class="font-mono text-xs text-crimson">04 // REGTECH</div>
-                    <h3 class="font-sans font-bold text-xl text-white">TECHNOLOGY</h3>
-                    <div class="flex flex-wrap gap-2 font-mono text-xs text-gray-300">
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">World-Check</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">Dow Jones</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">DDIQ</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">Microsoft Copilot</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">Alteryx</span>
-                        <span class="px-3 py-1.5 bg-white/5 rounded-md border border-white/10">Power BI</span>
+                <!-- Card 4 -->
+                <div class="editorial-card p-8 rounded-2xl space-y-8 reveal-up group" style="transition-delay: 0.3s;">
+                    <div class="flex justify-between items-center">
+                        <span class="font-mono text-xs text-crimson">04 // REGTECH</span>
+                        <span class="w-2 h-2 rounded-full bg-crimson group-hover:scale-150 transition-transform"></span>
+                    </div>
+                    <div>
+                        <h3 class="font-sans font-bold text-2xl text-white mb-2">TECHNOLOGY</h3>
+                        <p class="text-xs text-gray-400 font-mono">Screening engines & AI copilot workflows.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 font-mono text-xs">
+                        <span class="px-3 py-1.5 bg-crimson/10 text-crimson rounded-lg border border-crimson/30">World-Check</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">Dow Jones</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">DDIQ</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">Microsoft Copilot</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">Alteryx</span>
+                        <span class="px-3 py-1.5 bg-white/5 text-gray-300 rounded-lg border border-white/10">Power BI</span>
                     </div>
                 </div>
 
@@ -448,7 +500,7 @@
                         <div class="font-mono text-xs text-gray-500">01</div>
                         <h3 class="font-sans font-bold text-2xl md:text-3xl text-white">AML Consultant</h3>
                         <p class="font-mono text-xs text-cyan uppercase tracking-wider">Freelance / Remote</p>
-                        <p class="text-gray-400 text-sm font-light leading-relaxed">
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">
                             AML / Financial Crime consulting support for organizations looking to strengthen risk controls, EDD processes, compliance operations and financial crime frameworks.
                         </p>
                     </div>
@@ -462,7 +514,7 @@
                         <div class="font-mono text-xs text-gray-500">02</div>
                         <h3 class="font-sans font-bold text-2xl md:text-3xl text-white">AML Mentor</h3>
                         <p class="font-mono text-xs text-emerald uppercase tracking-wider">Advisory / Career</p>
-                        <p class="text-gray-400 text-sm font-light leading-relaxed">
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">
                             Guidance for professionals navigating AML career transitions, financial crime specialization and long-term career development.
                         </p>
                     </div>
@@ -476,7 +528,7 @@
                         <div class="font-mono text-xs text-gray-500">03</div>
                         <h3 class="font-sans font-bold text-2xl md:text-3xl text-white">AML Compliance Officer</h3>
                         <p class="font-mono text-xs text-crimson uppercase tracking-wider">Full-Time / Global</p>
-                        <p class="text-gray-400 text-sm font-light leading-relaxed">
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">
                             Open to AML, FCC, EDD, KYC, Financial Crime and compliance opportunities across global markets.
                         </p>
                     </div>
@@ -490,7 +542,7 @@
     </section>
 
     <!-- CINEMATIC CLOSE & INTERACTIVE CONTACT FORM BOX -->
-    <section id="contact" class="py-45 px-6 md:px-12 border-t border-white/10 text-center relative overflow-hidden">
+    <section id="contact" class="py-40 px-6 md:px-12 border-t border-white/10 text-center relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-t from-cyan/10 via-transparent to-transparent pointer-events-none"></div>
         <div class="max-w-3xl mx-auto relative z-10 space-y-10 reveal-up">
             
@@ -499,7 +551,7 @@
                 <h2 class="font-sans font-extrabold text-4xl md:text-7xl tracking-tight text-white">
                     LET'S BUILD WHAT'S NEXT.
                 </h2>
-                <p class="text-gray-400 text-base md:text-lg font-light max-w-lg mx-auto">
+                <p class="text-gray-300 text-base md:text-lg font-light max-w-lg mx-auto">
                     Financial crime is evolving. So should the people protecting it.
                 </p>
             </div>
