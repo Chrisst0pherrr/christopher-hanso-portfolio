@@ -3,24 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Christopher Hanso | AML & Financial Crime Specialist</title>
+    <title>Christopher Hanso | MLRO & Financial Crime Specialist</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
+                        sans: ['Outfit', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
                     },
                     colors: {
-                        brand: {
-                            bg: '#030305',
-                            card: 'rgba(20, 20, 25, 0.6)',
-                            border: 'rgba(255, 255, 255, 0.05)',
+                        dark: '#020203',
+                        neon: {
+                            blue: '#00f0ff',
+                            purple: '#8a2be2',
+                            emerald: '#00ff9d'
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'blob': 'blob 10s infinite alternate',
+                        'fade-in-up': 'fadeInUp 1s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0) scale(1)' },
+                            '50%': { transform: 'translateY(-15px) scale(1.02)' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '100%': { transform: 'translate(30px, -50px) scale(1.2)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
                     }
                 }
@@ -28,144 +51,140 @@
         }
     </script>
     <style>
-        body { 
-            background-color: #030305; 
-            color: #ffffff; 
+        body {
+            background-color: #020203;
+            color: #ffffff;
             overflow-x: hidden;
         }
-        
-        /* Fixed Ambient Glow - Matches the video's aesthetic[cite: 10] */
-        .ambient-glow {
+
+        /* Cinematic Gradient Backgrounds */
+        .cinematic-bg {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 50vw;
-            height: 50vw;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.1) 30%, rgba(0, 0, 0, 0) 70%);
-            filter: blur(80px);
-            z-index: -1;
-            pointer-events: none;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -2;
+            background: radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.05), transparent 40%),
+                        radial-gradient(circle at 85% 30%, rgba(138, 43, 226, 0.08), transparent 40%);
+            filter: blur(60px);
         }
 
-        /* Slide Container */
-        .slide {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 4rem 1.5rem;
+        /* Glassmorphism */
+        .glass {
+            background: rgba(20, 20, 25, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Floating Cutout Image Mask */
+        .floating-cutout {
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 240, 255, 0.15);
+        }
+
+        /* Service Cards Glow */
+        .service-card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            overflow: hidden;
+        }
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: 0.5s;
+        }
+        .service-card:hover::before {
+            left: 100%;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 10px 40px -10px rgba(0, 240, 255, 0.2);
+        }
+        
+        .service-reveal {
+            max-height: 0;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+        .service-card:hover .service-reveal {
+            max-height: 100px;
+            opacity: 1;
+            margin-top: 1rem;
         }
 
-        /* Glass Panels */
-        .glass-panel {
-            background: rgba(15, 15, 20, 0.4);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 1.5rem;
-        }
-
-        .glass-pill {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        /* Animations */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-up {
-            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .delay-100 { animation-delay: 100ms; opacity: 0; }
-        .delay-200 { animation-delay: 200ms; opacity: 0; }
-        .delay-300 { animation-delay: 300ms; opacity: 0; }
-        .delay-400 { animation-delay: 400ms; opacity: 0; }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #030305; }
-        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #374151; }
+        /* Scroll Bar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #020203; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
     </style>
 </head>
-<body class="antialiased selection:bg-blue-500/30">
+<body class="antialiased selection:bg-neon-blue selection:text-black">
 
-    <div class="ambient-glow"></div>
+    <div class="cinematic-bg animate-blob"></div>
 
-    <!-- 01 — HERO -->
-    <section id="hero" class="slide justify-center text-center">
-        <div class="max-w-5xl mx-auto w-full px-6">
-            <div class="inline-block animate-fade-up">
-                <span class="font-mono text-xs tracking-[0.2em] text-gray-400 uppercase mb-6 block">01 — Command Centre</span>
-            </div>
-            
-            <h1 class="text-6xl md:text-8xl lg:text-[7rem] font-black tracking-tighter leading-none mb-6 animate-fade-up delay-100">
-                Christopher<br/>Hanso.
+    <!-- 01 — HERO (Explore Only) -->
+    <section id="hero" class="min-h-screen flex flex-col items-center justify-center relative px-6">
+        <div class="text-center z-10 animate-fade-in-up">
+            <h2 class="text-neon-blue font-display tracking-[0.3em] uppercase text-sm mb-6">Financial Crime Command Centre</h2>
+            <h1 class="text-6xl md:text-[8rem] font-black tracking-tighter leading-none mb-6">
+                Hanso.
             </h1>
-            
-            <p class="text-xl md:text-3xl font-light text-gray-300 mb-10 animate-fade-up delay-200">
-                AML & Financial Crime Specialist <span class="text-blue-400 font-medium">/ 5+ Years</span>
+            <p class="text-xl md:text-2xl text-gray-400 font-light max-w-2xl mx-auto mb-16">
+                Architecting global compliance frameworks & executing high-risk EDD intelligence.
             </p>
-
-            <div class="flex flex-wrap justify-center gap-3 mb-12 animate-fade-up delay-300">
-                <span class="glass-pill px-4 py-2 rounded-full text-xs font-mono tracking-wider">AML</span>
-                <span class="glass-pill px-4 py-2 rounded-full text-xs font-mono tracking-wider">FCC</span>
-                <span class="glass-pill px-4 py-2 rounded-full text-xs font-mono tracking-wider">EDD</span>
-                <span class="glass-pill px-4 py-2 rounded-full text-xs font-mono tracking-wider">BLOCKCHAIN</span>
-                <span class="glass-pill px-4 py-2 rounded-full text-xs font-mono tracking-wider">AI AGENTS</span>
-            </div>
-
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-up delay-400">
-                <a href="#about" class="bg-white text-black font-semibold px-8 py-4 rounded-full hover:bg-gray-200 transition-colors duration-300 text-sm tracking-wide">
-                    LET'S TALK
-                </a>
-                <a href="#" class="text-gray-300 hover:text-white font-mono text-sm tracking-widest border-b border-gray-600 hover:border-white transition-all duration-300 pb-1">
-                    GET RESUME
-                </a>
-            </div>
+            
+            <a href="#about" class="inline-flex flex-col items-center group cursor-pointer">
+                <span class="text-xs font-display tracking-[0.2em] text-gray-400 group-hover:text-neon-blue transition-colors mb-4 uppercase">Explore</span>
+                <div class="w-8 h-12 rounded-full border border-gray-600 group-hover:border-neon-blue flex justify-center p-2 transition-all">
+                    <div class="w-1 h-3 bg-gray-400 group-hover:bg-neon-blue rounded-full animate-bounce"></div>
+                </div>
+            </a>
         </div>
     </section>
 
-    <!-- 02 — ABOUT ME (Inspired by Video Slide 2)[cite: 10] -->
-    <section id="about" class="slide">
-        <div class="max-w-7xl mx-auto w-full px-6">
-            <div class="font-mono text-xs tracking-[0.2em] text-gray-400 uppercase mb-12">02 — About Me</div>
-            
-            <div class="grid lg:grid-cols-12 gap-12 items-center">
-                <!-- Photo Left -->
-                <div class="lg:col-span-5 relative group">
-                    <div class="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                    <div class="glass-panel p-2 relative z-10 overflow-hidden aspect-[4/5]">
-                        <img src="WhatsApp Image 2026-09-24 at 12.12.27 AM.jpg" alt="Christopher Hanso" class="w-full h-full object-cover rounded-xl grayscale hover:grayscale-0 transition-all duration-700" />
-                    </div>
-                </div>
+    <!-- 02 — ABOUT ME & SHUFFLE METRICS -->
+    <section id="about" class="min-h-screen flex items-center py-20 px-6 relative z-10">
+        <div class="max-w-7xl mx-auto w-full">
+            <div class="grid lg:grid-cols-12 gap-12 items-start">
                 
-                <!-- Content Right -->
-                <div class="lg:col-span-7 space-y-10">
-                    <div>
-                        <p class="font-mono text-blue-400 text-sm mb-4">Hello, I am</p>
-                        <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">Christopher Hanso.</h2>
-                        <p class="text-gray-400 text-lg leading-relaxed font-light">
-                            Financial crime compliance professional specialising in Enhanced Due Diligence (EDD) for High and High+ risk and UHNW/HNW clients across <span class="text-white font-medium">APAC, EMEA, and MENA</span>.
-                        </p>
-                    </div>
+                <!-- Floating Photo Left -->
+                <div class="lg:col-span-4 relative">
+                    <div class="absolute inset-0 bg-neon-blue/10 blur-3xl rounded-full"></div>
+                    <img src="WhatsApp Image 2026-09-24 at 12.12.27 AM.jpg" alt="Christopher Hanso" class="w-full max-w-[300px] object-cover mx-auto floating-cutout animate-float relative z-10 border border-white/5" />
+                </div>
 
-                    <div class="grid sm:grid-cols-2 gap-8 pt-6 border-t border-white/10">
-                        <div>
-                            <h3 class="text-white font-semibold mb-2">Morgan Stanley</h3>
-                            <p class="text-sm text-gray-400 leading-relaxed">
-                                Executing complex SOW/SOF analysis and high-risk wealth management escalations. Built AI-assisted Copilot workflows for AML research.
-                            </p>
+                <!-- Detailed Summary Right -->
+                <div class="lg:col-span-8">
+                    <h3 class="font-display text-4xl md:text-5xl font-bold mb-8 tracking-tight">The Executive Summary</h3>
+                    <p class="text-gray-300 text-lg leading-relaxed mb-8 font-light">
+                        Financial crime compliance professional with 4+ years across <span class="text-white font-semibold">Morgan Stanley Wealth Management</span> and <span class="text-white font-semibold">Currencies Direct</span>. Specialising in Enhanced Due Diligence (EDD) for High and High+ risk and UHNW/HNW clients across APAC, EMEA and MENA. 
+                    </p>
+                    <p class="text-gray-300 text-lg leading-relaxed mb-12 font-light">
+                        Worked directly with an Australian MLRO on SMR submissions, high-risk escalations and AUSTRAC obligations. Subject matter expert for complex source of wealth / source of funds (SOW/SOF) reviews and analyst mentoring, and builder of AI-assisted Microsoft Copilot workflows for AML research. Seeking EDD, KYC/CDD and financial crime roles in Australia, including senior analyst and team lead positions.
+                    </p>
+
+                    <!-- Animated Shuffle Metric Boxes -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="metrics-container">
+                        <div class="glass p-5 rounded-xl border border-white/5 text-center hover:border-neon-blue/30 transition-all">
+                            <div class="text-3xl font-display font-bold text-neon-blue mb-1"><span class="shuffle-num" data-target="220">000</span>+</div>
+                            <div class="text-[10px] text-gray-400 uppercase tracking-widest">High Risk EDD</div>
                         </div>
-                        <div>
-                            <h3 class="text-white font-semibold mb-2">Currencies Direct</h3>
-                            <p class="text-sm text-gray-400 leading-relaxed">
-                                Partnered directly with the Australian MLRO. Managed SMR submissions, regulatory reporting, and strict AUSTRAC compliance obligations.
-                            </p>
+                        <div class="glass p-5 rounded-xl border border-white/5 text-center hover:border-neon-emerald/30 transition-all">
+                            <div class="text-3xl font-display font-bold text-neon-emerald mb-1"><span class="shuffle-num" data-target="100">000</span>+</div>
+                            <div class="text-[10px] text-gray-400 uppercase tracking-widest">UHNW SOW/SOF</div>
+                        </div>
+                        <div class="glass p-5 rounded-xl border border-white/5 text-center hover:border-neon-purple/30 transition-all">
+                            <div class="text-3xl font-display font-bold text-neon-purple mb-1"><span class="shuffle-num" data-target="3000">0000</span>+</div>
+                            <div class="text-[10px] text-gray-400 uppercase tracking-widest">Clients Onboarded</div>
+                        </div>
+                        <div class="glass p-5 rounded-xl border border-white/5 text-center hover:border-white/30 transition-all">
+                            <div class="text-3xl font-display font-bold text-white mb-1"><span class="shuffle-num" data-target="1000">0000</span>+</div>
+                            <div class="text-[10px] text-gray-400 uppercase tracking-widest">Sanctions Hits</div>
                         </div>
                     </div>
                 </div>
@@ -173,149 +192,160 @@
         </div>
     </section>
 
-    <!-- 03 — EXPERTISE (Bento Grid) -->
-    <section id="expertise" class="slide">
-        <div class="max-w-7xl mx-auto w-full px-6">
-            <div class="font-mono text-xs tracking-[0.2em] text-gray-400 uppercase mb-12">03 — Expertise Stack</div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div class="glass-panel p-8 hover:bg-white/5 transition-colors duration-300">
-                    <div class="font-mono text-blue-400 text-xs mb-4">01</div>
-                    <h3 class="text-xl font-bold mb-2">AML / FCC</h3>
-                    <p class="text-sm text-gray-400">End-to-end Financial Crime Compliance frameworks.</p>
-                </div>
+    <!-- 03 — WORK EXPERIENCE (Including FedEx) -->
+    <section id="experience" class="py-24 px-6 relative z-10 border-t border-white/5">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="font-display text-4xl font-bold mb-16 text-center">Operational Footprint</h2>
+            
+            <div class="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/20 before:to-transparent">
                 
-                <div class="glass-panel p-8 hover:bg-white/5 transition-colors duration-300">
-                    <div class="font-mono text-blue-400 text-xs mb-4">02</div>
-                    <h3 class="text-xl font-bold mb-2">EDD / KYC / KYB</h3>
-                    <p class="text-sm text-gray-400">Deep-dive due diligence on complex corporate structures.</p>
+                <!-- Morgan Stanley -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-neon-blue bg-dark shadow-[0_0_15px_rgba(0,240,255,0.5)] shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10"></div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass p-8 rounded-2xl">
+                        <div class="text-neon-blue font-display text-xs tracking-widest mb-2">MAR 2024 - PRESENT</div>
+                        <h3 class="text-2xl font-bold text-white mb-1">Morgan Stanley</h3>
+                        <p class="text-sm text-gray-400 mb-4">Associate, EDD, Compliance & Wealth Management</p>
+                        <p class="text-sm text-gray-300 font-light leading-relaxed">Completed 220+ end-to-end EDD reviews on High and High+ risk wealth management clients. Designed three AI-assisted Microsoft Copilot workflows for negative-media analysis and public-company affiliation research.</p>
+                    </div>
                 </div>
 
-                <div class="glass-panel p-8 hover:bg-white/5 transition-colors duration-300">
-                    <div class="font-mono text-blue-400 text-xs mb-4">03</div>
-                    <h3 class="text-xl font-bold mb-2">SOW / SOF</h3>
-                    <p class="text-sm text-gray-400">Ultra High Net Worth Source of Wealth/Funds verification.</p>
+                <!-- Currencies Direct -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white/30 bg-dark shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10"></div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass p-8 rounded-2xl">
+                        <div class="text-gray-400 font-display text-xs tracking-widest mb-2">JUN 2022 - MAR 2024</div>
+                        <h3 class="text-2xl font-bold text-white mb-1">Currencies Direct</h3>
+                        <p class="text-sm text-gray-400 mb-4">AML Compliance Officer</p>
+                        <p class="text-sm text-gray-300 font-light leading-relaxed">Worked directly with the Australian MLRO on high-risk escalations, SMR submissions and regulatory inquiries. Onboarded 3,000+ clients/users over two years across APAC and EMEA.</p>
+                    </div>
                 </div>
 
-                <div class="glass-panel p-8 hover:bg-white/5 transition-colors duration-300">
-                    <div class="font-mono text-blue-400 text-xs mb-4">04</div>
-                    <h3 class="text-xl font-bold mb-2">PEP & Sanctions</h3>
-                    <p class="text-sm text-gray-400">Global screening resolution and adverse media analysis.</p>
+                <!-- FedEx Express -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white/30 bg-dark shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10"></div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass p-8 rounded-2xl">
+                        <div class="text-gray-400 font-display text-xs tracking-widest mb-2">JUN 2021 - MAY 2022</div>
+                        <h3 class="text-2xl font-bold text-white mb-1">FedEx Express</h3>
+                        <p class="text-sm text-gray-400 mb-4">Customer Service Specialist</p>
+                        <p class="text-sm text-gray-300 font-light leading-relaxed">Verified customer documentation against customs, export-control and anti-fraud procedures; identified and escalated suspicious documentation and transaction patterns.</p>
+                    </div>
                 </div>
 
-                <div class="glass-panel p-8 hover:bg-white/5 transition-colors duration-300 lg:col-span-2">
-                    <div class="font-mono text-blue-400 text-xs mb-4">05</div>
-                    <h3 class="text-xl font-bold mb-2">Regulatory & RegTech</h3>
-                    <p class="text-sm text-gray-400">AUSTRAC & FATF compliance. Systems mastery including World-Check, Chainalysis, and TRM for crypto investigations.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 04 — SERVICES / CAPABILITIES -->
+    <section id="services" class="py-24 px-6 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="font-display text-4xl font-bold mb-16 text-center">Engagement Models</h2>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Freelance -->
+                <div class="glass p-8 rounded-2xl service-card cursor-pointer">
+                    <div class="h-1 w-12 bg-neon-blue mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-2">AML Consultant</h3>
+                    <p class="text-sm text-gray-400">Freelance / Remote</p>
+                    <div class="service-reveal">
+                        <div class="bg-neon-blue/10 border border-neon-blue/30 text-neon-blue text-xs p-3 rounded-lg font-display tracking-wide uppercase">
+                            Open to Global Remote Consulting Opportunities
+                        </div>
+                    </div>
                 </div>
 
-                <div class="glass-panel p-8 hover:bg-white/5 transition-colors duration-300 lg:col-span-3 border-blue-500/20 bg-blue-500/5">
-                    <div class="font-mono text-blue-400 text-xs mb-4">06 / INNOVATION</div>
-                    <h3 class="text-xl font-bold mb-2">AI Workflow Engineering</h3>
-                    <p class="text-sm text-gray-400">Building custom Microsoft Workflow Agents, alongside advanced prompt engineering in Claude & ChatGPT for accelerated investigative research.</p>
+                <!-- Mentor -->
+                <div class="glass p-8 rounded-2xl service-card cursor-pointer">
+                    <div class="h-1 w-12 bg-neon-purple mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-2">AML Mentor</h3>
+                    <p class="text-sm text-gray-400">Advisory & Coaching</p>
+                    <div class="service-reveal">
+                        <div class="bg-neon-purple/10 border border-neon-purple/30 text-neon-purple text-xs p-3 rounded-lg font-display tracking-wide uppercase">
+                            Open to Guide on Career transition & expert talk on shaping your AML career
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Full-Time -->
+                <div class="glass p-8 rounded-2xl service-card cursor-pointer">
+                    <div class="h-1 w-12 bg-neon-emerald mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-2">AML Compliance Officer</h3>
+                    <p class="text-sm text-gray-400">Permanent Placement</p>
+                    <div class="service-reveal">
+                        <div class="bg-neon-emerald/10 border border-neon-emerald/30 text-neon-emerald text-xs p-3 rounded-lg font-display tracking-wide uppercase">
+                            Open to full time Global opportunities
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 04 — PROOF + SERVICES -->
-    <section id="proof" class="slide">
-        <div class="max-w-7xl mx-auto w-full px-6">
-            <div class="font-mono text-xs tracking-[0.2em] text-gray-400 uppercase mb-12">04 — The Proof</div>
-
-            <!-- Big Metrics -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16 border-b border-white/10 pb-16">
-                <div>
-                    <div class="text-4xl md:text-6xl font-black mb-2">220<span class="text-blue-500">+</span></div>
-                    <div class="font-mono text-xs text-gray-400 uppercase tracking-widest">EDD Reviews</div>
-                </div>
-                <div>
-                    <div class="text-4xl md:text-6xl font-black mb-2">100<span class="text-blue-500">+</span></div>
-                    <div class="font-mono text-xs text-gray-400 uppercase tracking-widest">UHNW SOW/SOF</div>
-                </div>
-                <div>
-                    <div class="text-4xl md:text-6xl font-black mb-2">3k<span class="text-blue-500">+</span></div>
-                    <div class="font-mono text-xs text-gray-400 uppercase tracking-widest">Clients Onboarded</div>
-                </div>
-                <div>
-                    <div class="text-4xl md:text-6xl font-black mb-2">1k<span class="text-blue-500">+</span></div>
-                    <div class="font-mono text-xs text-gray-400 uppercase tracking-widest">Sanctions Hits</div>
-                </div>
-            </div>
-
-            <!-- Services -->
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="space-y-4">
-                    <div class="h-px w-12 bg-blue-500 mb-6"></div>
-                    <h3 class="text-2xl font-bold">AML Consultant</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Independent advisory for fintechs and wealth managers designing compliant frameworks from the ground up.</p>
-                </div>
-                <div class="space-y-4">
-                    <div class="h-px w-12 bg-white mb-6"></div>
-                    <h3 class="text-2xl font-bold">AML Mentor</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Guiding the next generation of analysts in investigative methodology and risk-based decisioning.</p>
-                </div>
-                <div class="space-y-4">
-                    <div class="h-px w-12 bg-white mb-6"></div>
-                    <h3 class="text-2xl font-bold">FCC Officer</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Full-time operational leadership driving regulatory alignment, SMR reporting, and escalation handling.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 05 — CLOSE -->
-    <section id="close" class="slide justify-center text-center">
-        <div class="max-w-4xl mx-auto w-full px-6">
-            <div class="font-mono text-xs tracking-[0.2em] text-gray-400 uppercase mb-12">05 — Deploy Anywhere</div>
+    <!-- 05 — CLOSE & CONTACT (Vibrant Cinematic Footer) -->
+    <section id="close" class="relative py-32 px-6 flex flex-col items-center justify-center text-center overflow-hidden border-t border-white/5">
+        <!-- Intense Vibrant Background for Footer -->
+        <div class="absolute inset-0 bg-gradient-to-t from-neon-blue/20 via-neon-purple/10 to-transparent z-0"></div>
+        
+        <div class="relative z-10 max-w-4xl mx-auto">
+            <h2 class="text-5xl md:text-7xl font-black mb-12 tracking-tight">Initiate Protocol.</h2>
             
-            <h2 class="text-4xl md:text-6xl font-bold mb-8">Global Opportunities.</h2>
-            
-            <div class="flex flex-wrap justify-center gap-4 mb-16 text-sm font-mono text-gray-400 uppercase tracking-widest">
-                <span>Australia</span>
-                <span class="text-white/20">/</span>
-                <span>UAE</span>
-                <span class="text-white/20">/</span>
-                <span>Ireland</span>
-                <span class="text-white/20">/</span>
-                <span>UK</span>
-                <span class="text-white/20">/</span>
-                <span>Europe</span>
-                <span class="text-white/20">/</span>
-                <span>Singapore</span>
-            </div>
-
             <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
-                <a href="mailto:christopherhanso.aml@gmail.com" class="bg-blue-600 text-white font-semibold px-10 py-4 rounded-full hover:bg-blue-500 transition-colors duration-300 text-sm tracking-wide">
-                    LET'S TALK
+                <!-- Shoots to automated email -->
+                <a href="mailto:christopherhanso.aml@gmail.com" class="bg-white text-black font-display font-bold uppercase tracking-widest px-10 py-5 rounded-full hover:scale-105 transition-transform duration-300 shadow-[0_0_30px_rgba(255,255,255,0.3)] text-sm">
+                    Let's Talk
                 </a>
-                <a href="#" class="glass-pill text-white font-semibold px-10 py-4 rounded-full hover:bg-white/10 transition-colors duration-300 text-sm tracking-wide">
-                    GET RESUME
+                
+                <!-- Downloads Resume -->
+                <a href="Christopher_Hanso_AML_EDD_CV_Australia.pdf" download="Christopher_Hanso_AML_EDD_CV.pdf" class="glass text-white font-display font-bold uppercase tracking-widest px-10 py-5 rounded-full hover:bg-white/10 hover:border-white transition-all duration-300 text-sm flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Get Resume
                 </a>
             </div>
 
-            <div class="flex justify-center gap-8 font-mono text-xs tracking-widest uppercase">
-                <a href="https://linkedin.com" target="_blank" class="text-gray-500 hover:text-white transition-colors">LinkedIn</a>
-                <a href="mailto:christopherhanso.aml@gmail.com" class="text-gray-500 hover:text-white transition-colors">Email</a>
+            <div class="flex justify-center gap-10 font-display text-xs tracking-[0.2em] uppercase text-gray-400">
+                <a href="https://linkedin.com" target="_blank" class="hover:text-neon-blue transition-colors duration-300">LinkedIn</a>
+                <a href="mailto:christopherhanso.aml@gmail.com" class="hover:text-neon-purple transition-colors duration-300">christopherhanso.aml@gmail.com</a>
             </div>
         </div>
     </section>
 
-    <!-- Intersection Observer Script to trigger fade-up animations on scroll -->
+    <!-- JS for Rapid Number Shuffle on Scroll -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            const elements = document.querySelectorAll('.shuffle-num');
+            let hasAnimated = false;
+
+            const animateValue = (element, target) => {
+                let current = 0;
+                let iterations = 0;
+                const maxIterations = 20; // Number of quick shuffles
+                
+                const interval = setInterval(() => {
+                    if (iterations >= maxIterations) {
+                        clearInterval(interval);
+                        element.innerText = target;
+                    } else {
+                        // Generate random string of numbers of same length
+                        element.innerText = Math.floor(Math.random() * target * 2);
+                        iterations++;
+                    }
+                }, 40); // speed of shuffle
+            };
+
             const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.animationPlayState = 'running';
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !hasAnimated) {
+                        hasAnimated = true;
+                        elements.forEach(el => {
+                            const target = parseInt(el.getAttribute('data-target'));
+                            animateValue(el, target);
+                        });
                     }
                 });
-            }, { threshold: 0.1 });
+            }, { threshold: 0.5 });
 
-            document.querySelectorAll('.animate-fade-up').forEach((el) => {
-                el.style.animationPlayState = 'paused';
-                observer.observe(el);
-            });
+            const metricsContainer = document.getElementById('metrics-container');
+            if (metricsContainer) observer.observe(metricsContainer);
         });
     </script>
 </body>
