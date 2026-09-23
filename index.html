@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth bg-[#010101]">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +8,10 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Premium Typography -->
+    <!-- Premium Typography: Kanit (from the PDF prompt) & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=Kanit:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -19,11 +19,10 @@
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                        display: ['Kanit', 'sans-serif'], // Used for chrome gradients
                     },
-                    letterSpacing: {
-                        tightest: '-0.08em', /* Forces letters to overlap beautifully */
-                        tighter: '-0.04em',
-                        widest: '0.3em',
+                    colors: {
+                        dark: '#0C0C0C', // From PDF specs
                     }
                 }
             }
@@ -37,279 +36,369 @@
         }
 
         body {
-            background-color: #010101; /* Pitch black */
+            background-color: #010101;
             color: #ffffff;
-            margin: 0;
             overflow-x: hidden;
+            margin: 0;
+            word-break: normal; /* PDF instruction: no mid-word breaks */
         }
 
         /* -------------------------------------------
-           1. GLASS BLACK BACKGROUND & LIGHT SPECS
+           1. CINEMATIC ENVIRONMENT & ASSETS
            ------------------------------------------- */
         .glass-bg {
             position: fixed;
             inset: 0;
             background: radial-gradient(circle at 50% 50%, #0a0a0f 0%, #010101 100%);
             z-index: 1;
+            pointer-events: none;
         }
 
-        /* Animated Specs of Light */
-        .light-spec {
-            position: absolute;
-            background: rgba(0, 240, 255, 0.8);
-            border-radius: 50%;
-            box-shadow: 0 0 10px 2px rgba(0, 240, 255, 0.5);
-            animation: floatUp infinite linear;
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(100vh) scale(0); opacity: 0; }
-            20% { opacity: 1; scale: 1; }
-            80% { opacity: 1; scale: 1; }
-            100% { transform: translateY(-20vh) scale(0); opacity: 0; }
-        }
-
-        /* -------------------------------------------
-           2. FLOATING ASSETS (Globe, $, £)
-           ------------------------------------------- */
-        .floating-asset {
+        /* Floating Assets ($ and £) */
+        .floating-symbol {
             position: fixed;
             z-index: 2;
-            color: rgba(255, 255, 255, 0.03);
+            color: rgba(255, 255, 255, 0.02);
+            font-family: 'Inter', sans-serif;
             font-weight: 900;
             user-select: none;
+            pointer-events: none;
             will-change: transform;
         }
-
-        .asset-dollar {
-            font-size: 20rem;
-            top: 10%; right: 15%;
+        .symbol-dollar {
+            font-size: 25rem;
+            top: 5%; right: 10%;
             transform: translate(calc(var(--mouse-x) * -2), calc(var(--mouse-y) * -2)) rotate(15deg);
         }
-
-        .asset-pound {
-            font-size: 15rem;
-            bottom: 15%; left: 5%;
+        .symbol-pound {
+            font-size: 20rem;
+            bottom: 5%; left: 5%;
             transform: translate(calc(var(--mouse-x) * 1.5), calc(var(--mouse-y) * 1.5)) rotate(-10deg);
         }
 
-        /* Rotating Wireframe Globe */
-        .tracking-globe {
+        /* Rotating Tracking Globe */
+        .globe-container {
             position: fixed;
-            top: 20%; left: 50%;
-            width: 600px; height: 600px;
-            transform: translate(-50%, 0) translate(calc(var(--mouse-x) * -0.5), calc(var(--mouse-y) * -0.5));
-            opacity: 0.15;
+            top: 15%; left: 45%;
+            width: 700px; height: 700px;
+            opacity: 0.07;
             z-index: 2;
-            animation: spin 30s linear infinite;
+            pointer-events: none;
+            transform: translate(calc(var(--mouse-x) * -0.5), calc(var(--mouse-y) * -0.5));
+            animation: spinGlobe 40s linear infinite;
         }
-        @keyframes spin { 100% { transform: translate(-50%, 0) translate(calc(var(--mouse-x) * -0.5), calc(var(--mouse-y) * -0.5)) rotate(360deg); } }
+        @keyframes spinGlobe { 100% { transform: translate(calc(var(--mouse-x) * -0.5), calc(var(--mouse-y) * -0.5)) rotate(360deg); } }
+
+        /* Chrome/Silver Gradient for Headlines */
+        .chrome-text {
+            background: linear-gradient(180deg, #ffffff 0%, #646973 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
         /* -------------------------------------------
-           3. FOREGROUND & TYPOGRAPHY
+           2. FOREGROUND & TYPOGRAPHY OVERLAPS
            ------------------------------------------- */
-        #content-wrapper {
+        #content-layer {
             position: relative;
             z-index: 10;
         }
 
-        /* Cinematic Photo Glass Mask */
-        .photo-glass {
+        /* Photo Pop-up in Hero */
+        .hero-photo-container {
             position: relative;
-            border-radius: 20px;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
             transform: translate(calc(var(--mouse-x) * 0.8), calc(var(--mouse-y) * 0.8));
-            transition: filter 0.3s ease;
+            transition: filter 0.4s ease;
+            opacity: 0;
+            animation: fadeUp 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
         }
-        .photo-glass::after {
+        .hero-photo-container::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, transparent 60%, #010101 100%);
-        }
-        .photo-glass:hover {
-            filter: brightness(1.2);
+            background: linear-gradient(to bottom, transparent 50%, #010101 100%);
         }
 
-        /* Overlapping Typography Setup */
-        .name-group {
+        /* Overlapping Name Logic */
+        .overlapping-name-group {
             position: relative;
             transform: translate(calc(var(--mouse-x) * 1.2), calc(var(--mouse-y) * 1.2));
         }
-        .text-glow {
-            text-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+        .name-bg {
+            position: absolute;
+            top: -40px; left: 0;
+            font-size: clamp(4rem, 8vw, 8rem);
+            font-weight: 300;
+            letter-spacing: -0.04em;
+            color: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+            white-space: nowrap;
+        }
+        .name-fg {
+            position: relative;
+            font-size: clamp(5rem, 10vw, 10rem);
+            font-weight: 900;
+            letter-spacing: -0.06em;
+            z-index: 10;
+            line-height: 0.8;
+            text-shadow: 0 20px 40px rgba(0,0,0,0.8);
         }
 
-        /* Animations */
+        /* -------------------------------------------
+           3. ANIMATIONS & COMPONENTS
+           ------------------------------------------- */
         .reveal {
             opacity: 0;
-            transform: translateY(40px);
-            animation: revealUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .delay-1 { animation-delay: 0.2s; }
-        .delay-2 { animation-delay: 0.5s; }
-        .delay-3 { animation-delay: 0.7s; }
-        .delay-4 { animation-delay: 1s; }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes revealUp {
-            to { opacity: 1; transform: translateY(0); }
+        /* Dark on Dark Cards[cite: 12] */
+        .dark-card {
+            background: rgba(15, 15, 20, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s ease;
+        }
+        .dark-card:hover {
+            border-color: rgba(0, 240, 255, 0.3);
+            transform: translateY(-5px);
         }
 
-        .animate-bounce-slow { animation: bounceSlow 2s infinite ease-in-out; }
-        @keyframes bounceSlow {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(10px); }
-        }
+        /* Scroll Bar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #010101; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
     </style>
 </head>
 <body>
 
-    <!-- 1. GLASS BLACK BACKGROUND -->
+    <!-- DATA LAYER SCRIPT (Mimicking portfolio.json architecture[cite: 12]) -->
+    <script>
+        const portfolioData = {
+            profile: {
+                name: "CHRISTOPHER",
+                lastName: "HANSO.",
+                tagline: "AML RISK • FINANCIAL CRIME • EDD • COMPLIANCE",
+                bio: "Building stronger financial crime controls through high-risk intelligence, enhanced due diligence and regulatory thinking.",
+                photo: "WhatsApp%20Image%202026-09-24%20at%2012.12.27%20AM.jpg",
+                resume: "Christopher_Hanso_AML_EDD_CV_Australia.pdf", // Attached Resume
+                email: "christopherhanso.aml@gmail.com"
+            },
+            stats: [
+                { value: "220+", label: "High Risk EDD" },
+                { value: "100+", label: "UHNW SOW/SOF" },
+                { value: "3,000+", label: "Clients Onboarded" },
+                { value: "1,000+", label: "Sanctions Hits" }
+            ],
+            experience: [
+                { id: "01", company: "Morgan Stanley", role: "Associate, EDD & Compliance", period: "MAR 2024 - PRESENT", desc: "Completed 220+ end-to-end EDD reviews on High and High+ risk wealth management clients. Designed AI-assisted Microsoft Copilot workflows for AML research." },
+                { id: "02", company: "Currencies Direct", role: "AML Compliance Officer", period: "JUN 2022 - MAR 2024", desc: "Worked directly with the Australian MLRO on high-risk escalations and SMR submissions. Onboarded 3,000+ clients across APAC and EMEA." },
+                { id: "03", company: "FedEx Express", role: "Customer Service Specialist", period: "JUN 2021 - MAY 2022", desc: "Verified documentation against customs, export-control and anti-fraud procedures; escalated suspicious transaction patterns." } // FedEx included[cite: 9]
+            ],
+            services: [
+                { title: "AML Consultant", type: "Freelance / Remote", accent: "border-cyan-500", reveal: "Open to global remote consulting opportunities" },
+                { title: "AML Mentor", type: "Advisory & Coaching", accent: "border-purple-500", reveal: "Open to guide on career transition & expert talk on shaping your AML career" },
+                { title: "AML Compliance Officer", type: "Full-Time Placement", accent: "border-emerald-500", reveal: "Open to full time Global opportunities" }
+            ]
+        };
+    </script>
+
+    <!-- CINEMATIC BACKGROUND -->
     <div class="glass-bg"></div>
-
-    <!-- 2. LIGHT SPECS (Generated via JS below for randomness) -->
-    <div id="light-specs-container"></div>
-
-    <!-- 3. FLOATING BACKGROUND ASSETS -->
-    <div class="floating-asset asset-dollar">$</div>
-    <div class="floating-asset asset-pound">£</div>
+    <div class="floating-symbol symbol-dollar">$</div>
+    <div class="floating-symbol symbol-pound">£</div>
     
-    <!-- SVG Tracking Globe -->
-    <svg class="tracking-globe" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="48" fill="none" stroke="#00f0ff" stroke-width="0.2"/>
-        <ellipse cx="50" cy="50" rx="20" ry="48" fill="none" stroke="#00f0ff" stroke-width="0.2"/>
-        <ellipse cx="50" cy="50" rx="48" ry="20" fill="none" stroke="#00f0ff" stroke-width="0.2"/>
-        <line x1="50" y1="2" x2="50" y2="98" stroke="#00f0ff" stroke-width="0.2"/>
-        <line x1="2" y1="50" x2="98" y2="50" stroke="#00f0ff" stroke-width="0.2"/>
-        <!-- Tracking Blip -->
-        <circle cx="70" cy="50" r="1.5" fill="#00f0ff">
-            <animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="35" cy="18" r="1" fill="#00f0ff">
-            <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite"/>
-        </circle>
+    <!-- Rotating Globe SVG -->
+    <svg class="globe-container" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="48" fill="none" stroke="#ffffff" stroke-width="0.3"/>
+        <ellipse cx="50" cy="50" rx="20" ry="48" fill="none" stroke="#ffffff" stroke-width="0.3"/>
+        <ellipse cx="50" cy="50" rx="48" ry="20" fill="none" stroke="#ffffff" stroke-width="0.3"/>
+        <line x1="50" y1="2" x2="50" y2="98" stroke="#ffffff" stroke-width="0.3"/>
+        <line x1="2" y1="50" x2="98" y2="50" stroke="#ffffff" stroke-width="0.3"/>
+        <circle cx="70" cy="50" r="1.5" fill="#00f0ff"><animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite"/></circle>
     </svg>
 
-    <!-- 4. MAIN CONTENT -->
-    <div id="content-wrapper">
+    <!-- MAIN CONTENT -->
+    <div id="content-layer">
         
-        <!-- SECTION 01 — HERO -->
-        <section id="hero" class="relative min-h-screen flex items-center justify-center px-6 sm:px-12 lg:px-24">
-            
-            <div class="max-w-7xl w-full mx-auto grid lg:grid-cols-12 gap-12 items-center pt-10">
+        <!-- SECTION 01: HERO -->
+        <section id="hero" class="relative min-h-screen flex items-center px-6 sm:px-12 lg:px-24">
+            <div class="max-w-7xl w-full mx-auto grid lg:grid-cols-12 gap-12 items-center">
                 
-                <!-- LEFT: Photo Pop-up -->
-                <div class="lg:col-span-4 reveal delay-2">
-                    <div class="photo-glass w-full max-w-[320px] mx-auto lg:ml-0 aspect-[4/5]">
-                        <img src="WhatsApp%20Image%202026-09-24%20at%2012.12.27%20AM.jpg" alt="Christopher Hanso" class="w-full h-full object-cover grayscale opacity-80 mix-blend-screen" />
-                        
-                        <!-- Floating Tech Accent on Image -->
-                        <div class="absolute top-4 left-4 flex gap-1">
-                            <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></span>
-                            <span class="text-[8px] font-mono text-cyan-400 uppercase tracking-widest">Target Acquired</span>
-                        </div>
+                <!-- Left: Popping Photo -->
+                <div class="lg:col-span-4 order-2 lg:order-1">
+                    <div class="hero-photo-container w-full max-w-[320px] mx-auto lg:ml-0 aspect-[4/5] bg-dark">
+                        <img src="WhatsApp%20Image%202026-09-24%20at%2012.12.27%20AM.jpg" alt="Christopher Hanso" class="w-full h-full object-cover grayscale opacity-90 mix-blend-screen" />
                     </div>
                 </div>
 
-                <!-- RIGHT: Overlapping Typography & Summary -->
-                <div class="lg:col-span-8 name-group">
-                    
-                    <!-- Eyebrow -->
-                    <div class="reveal delay-1 mb-6">
-                        <span class="font-sans text-[10px] md:text-xs tracking-widest text-gray-500 uppercase border-l border-cyan-500/50 pl-4">
+                <!-- Right: Overlapping Typography -->
+                <div class="lg:col-span-8 overlapping-name-group order-1 lg:order-2 mt-20 lg:mt-0">
+                    <div class="mb-8 reveal" style="transition-delay: 0.2s">
+                        <span class="font-sans text-[10px] tracking-[0.3em] text-gray-500 uppercase border-l border-cyan-500 pl-4">
                             FINANCIAL CRIME • AML • EDD • FCC
                         </span>
                     </div>
                     
-                    <!-- Overlapping Headline -->
-                    <div class="reveal delay-2 relative mb-6">
-                        <!-- 'CHRISTOPHER' sits slightly behind and higher -->
-                        <h1 class="font-sans font-light text-5xl md:text-7xl lg:text-[7rem] leading-none tracking-tightest text-gray-400 opacity-60 absolute -top-10 md:-top-16 left-0 z-0 select-none text-glow">
-                            CHRISTOPHER
-                        </h1>
-                        <!-- 'HANSO.' sits in front, bolder, overlapping the top word -->
-                        <h1 class="font-sans font-black text-6xl md:text-[8rem] lg:text-[10rem] leading-none tracking-tightest text-white relative z-10 drop-shadow-2xl">
-                            HANSO<span class="text-cyan-500">.</span>
-                        </h1>
+                    <div class="relative mb-6 reveal" style="transition-delay: 0.4s">
+                        <h1 class="font-display name-bg">CHRISTOPHER</h1>
+                        <h1 class="font-display name-fg chrome-text">HANSO<span class="text-cyan-500">.</span></h1>
                     </div>
                     
-                    <!-- Executive Statement -->
-                    <div class="reveal delay-3 max-w-xl mt-6 relative z-20">
-                        <p class="font-sans text-lg md:text-xl text-gray-400 font-light leading-relaxed">
-                            Building stronger financial crime controls through high-risk intelligence, enhanced due diligence and regulatory thinking.
-                        </p>
+                    <div class="reveal max-w-xl relative z-20" style="transition-delay: 0.6s">
+                        <h2 class="font-sans text-xs md:text-sm tracking-widest text-gray-300 mb-4 bg-white/5 inline-block px-3 py-1 rounded">
+                            AML RISK • FINANCIAL CRIME • EDD • BLOCKCHAIN COMPLIANCE
+                        </h2>
+                        <p class="font-sans text-lg md:text-xl text-gray-400 font-light leading-relaxed" id="bio-text"></p>
                     </div>
-
                 </div>
             </div>
 
-            <!-- EXPLORE Indicator (Bottom Center) -->
-            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 reveal delay-4 z-30">
-                <a href="#about" class="group flex flex-col items-center justify-center cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-300">
-                    <span class="font-sans text-[10px] tracking-widest text-gray-400 uppercase mb-3 transition-colors group-hover:text-cyan-400">
-                        Explore
-                    </span>
+            <!-- Explore Button -->
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 reveal z-30" style="transition-delay: 1s">
+                <a href="#about" class="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+                    <span class="font-sans text-[10px] tracking-widest text-gray-400 uppercase mb-3">Explore</span>
                     <div class="w-[1px] h-12 bg-gray-800 relative overflow-hidden">
-                        <div class="w-full h-1/2 bg-cyan-400 absolute top-0 animate-bounce-slow shadow-[0_0_15px_rgba(0,240,255,1)]"></div>
+                        <div class="w-full h-1/2 bg-cyan-400 absolute top-0 animate-bounce"></div>
                     </div>
                 </a>
             </div>
         </section>
 
-        <!-- Placeholder for Section 2 (Allows scrolling) -->
-        <section id="about" class="min-h-screen flex items-center justify-center bg-black/50 z-10 relative">
-            <h2 class="text-gray-600 font-sans tracking-widest uppercase text-xs border border-gray-800 px-6 py-3 rounded-full">[ Slide 02: Stats & Details Loading... ]</h2>
+        <!-- SECTION 02: ABOUT & SHUFFLE STATS -->
+        <section id="about" class="py-24 px-6 relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="stats-container">
+                    <!-- Stats injected via JS -->
+                </div>
+            </div>
         </section>
 
+        <!-- SECTION 03: EXPERIENCE (Numbered timeline format[cite: 12]) -->
+        <section id="experience" class="py-24 px-6 relative border-t border-white/5">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="font-display chrome-text text-4xl font-bold mb-16">OPERATIONAL FOOTPRINT</h2>
+                <div class="space-y-6" id="exp-container">
+                    <!-- Experience injected via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 04: SERVICES (Dark Cards[cite: 12]) -->
+        <section id="services" class="py-24 px-6 relative border-t border-white/5">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="font-display chrome-text text-4xl font-bold mb-16 text-center">ENGAGEMENT MODELS</h2>
+                <div class="grid md:grid-cols-3 gap-6" id="services-container">
+                    <!-- Services injected via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 05: FOOTER & DOWNLOADS -->
+        <section id="contact" class="py-32 px-6 relative border-t border-white/5 text-center overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-t from-cyan-900/10 to-transparent"></div>
+            <div class="max-w-4xl mx-auto relative z-10 reveal">
+                <h2 class="font-display chrome-text text-5xl md:text-7xl font-black mb-12">INITIATE PROTOCOL.</h2>
+                
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
+                    <a href="mailto:christopherhanso.aml@gmail.com" class="bg-white text-black font-sans font-bold uppercase tracking-widest px-10 py-5 rounded-full hover:scale-105 transition-transform text-sm shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                        Let's Talk
+                    </a>
+                    <a href="Christopher_Hanso_AML_EDD_CV_Australia.pdf" download="Christopher_Hanso_AML_EDD_CV.pdf" class="dark-card text-white font-sans font-bold uppercase tracking-widest px-10 py-5 rounded-full hover:bg-white/10 transition-colors text-sm flex items-center gap-2">
+                        Get Resume
+                    </a>
+                </div>
+
+                <div class="flex justify-center gap-10 font-sans text-xs tracking-widest uppercase text-gray-500">
+                    <a href="https://linkedin.com" target="_blank" class="hover:text-white transition-colors">LinkedIn</a>
+                    <a href="mailto:christopherhanso.aml@gmail.com" class="hover:text-white transition-colors">Email</a>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <!-- Interactive Javascript for Smooth Lerp Parallax & Light Specs -->
+    <!-- VANILLA JS ENGINE (Mimics React Component Rendering) -->
     <script>
-        // 1. Generate random specs of light
-        const lightContainer = document.getElementById('light-specs-container');
-        for(let i=0; i<15; i++) {
-            let spec = document.createElement('div');
-            spec.className = 'light-spec';
-            spec.style.width = Math.random() * 3 + 1 + 'px';
-            spec.style.height = spec.style.width;
-            spec.style.left = Math.random() * 100 + 'vw';
-            spec.style.animationDuration = Math.random() * 10 + 10 + 's';
-            spec.style.animationDelay = Math.random() * 5 + 's';
-            lightContainer.appendChild(spec);
-        }
+        // 1. Render Bio
+        document.getElementById('bio-text').innerText = portfolioData.profile.bio;
 
-        // 2. Buttery Smooth Cursor Parallax (Lerp)
+        // 2. Render Stats
+        const statsHtml = portfolioData.stats.map(stat => `
+            <div class="dark-card p-6 rounded-xl text-center reveal">
+                <div class="font-display text-4xl font-bold text-white mb-1 chrome-text">${stat.value}</div>
+                <div class="text-[10px] font-sans text-gray-400 uppercase tracking-widest">${stat.label}</div>
+            </div>
+        `).join('');
+        document.getElementById('stats-container').innerHTML = statsHtml;
+
+        // 3. Render Experience (Numbered 01/02/03[cite: 12])
+        const expHtml = portfolioData.experience.map(job => `
+            <div class="dark-card p-8 rounded-2xl reveal flex flex-col md:flex-row gap-6 items-start">
+                <div class="font-display text-3xl font-black text-gray-700">${job.id}</div>
+                <div>
+                    <div class="text-cyan-400 font-sans text-xs tracking-widest mb-2">${job.period}</div>
+                    <h3 class="text-2xl font-bold text-white mb-1">${job.company}</h3>
+                    <p class="text-sm text-gray-400 mb-4">${job.role}</p>
+                    <p class="text-sm text-gray-300 font-light leading-relaxed">${job.desc}</p>
+                </div>
+            </div>
+        `).join('');
+        document.getElementById('exp-container').innerHTML = expHtml;
+
+        // 4. Render Services
+        const srvHtml = portfolioData.services.map(srv => `
+            <div class="dark-card p-8 rounded-2xl reveal group cursor-pointer border-t-2 ${srv.accent}">
+                <h3 class="text-2xl font-bold mb-2">${srv.title}</h3>
+                <p class="text-sm text-gray-400 mb-4">${srv.type}</p>
+                <div class="overflow-hidden max-h-0 group-hover:max-h-24 transition-all duration-500">
+                    <div class="bg-black/50 text-gray-300 text-xs p-3 rounded-lg font-sans uppercase tracking-widest border border-white/5">
+                        ${srv.reveal}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        document.getElementById('services-container').innerHTML = srvHtml;
+
+        // 5. Scroll Reveal & Parallax Physics
+        const reveals = document.querySelectorAll('.reveal');
+        
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            reveals.forEach(reveal => {
+                const revealTop = reveal.getBoundingClientRect().top;
+                if (revealTop < windowHeight - 50) {
+                    reveal.classList.add('active');
+                }
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        setTimeout(revealOnScroll, 100); // Trigger initial load
+
+        // Smooth Lerp Mouse Tracking
         let targetX = 0, targetY = 0;
         let currentX = 0, currentY = 0;
-        
         document.addEventListener('mousemove', (e) => {
-            // Calculate target position relative to center
-            targetX = (e.clientX - window.innerWidth / 2) / 30;
-            targetY = (e.clientY - window.innerHeight / 2) / 30;
+            targetX = (e.clientX - window.innerWidth / 2) / 40;
+            targetY = (e.clientY - window.innerHeight / 2) / 40;
         });
-
         function animateParallax() {
-            // Lerp formula: current += (target - current) * ease
             currentX += (targetX - currentX) * 0.1;
             currentY += (targetY - currentY) * 0.1;
-            
-            // Update CSS variables smoothly every frame
             document.documentElement.style.setProperty('--mouse-x', `${currentX}px`);
             document.documentElement.style.setProperty('--mouse-y', `${currentY}px`);
-            
             requestAnimationFrame(animateParallax);
         }
         animateParallax();
-
-        // 3. Smooth scroll for Explore button
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
     </script>
 </body>
 </html>
