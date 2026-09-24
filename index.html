@@ -88,7 +88,7 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.08), transparent 40%);
+            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.1), transparent 45%);
             z-index: 0;
             border-radius: inherit;
             pointer-events: none;
@@ -108,7 +108,7 @@
             transition: transform 0.3s ease;
         }
 
-        /* SECTION GRIDS (Custom colors for different slides) */
+        /* SECTION GRIDS */
         .bg-grid-white {
             background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
@@ -156,7 +156,7 @@
             animation: scanHorizontal 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
-        /* SLEEK 3D GEOMETRIC BACKGROUND FIGURES */
+        /* AESTHETIC 3D GEOMETRIC BACKGROUND FIGURES */
         .perspective-env {
             position: fixed;
             inset: 0;
@@ -165,6 +165,8 @@
             perspective: 1200px;
             overflow: hidden;
         }
+
+        /* 3D Cubes */
         .cube-3d {
             position: relative;
             transform-style: preserve-3d;
@@ -173,12 +175,14 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            border: 1px solid rgba(193, 176, 124, 0.25);
-            background: rgba(193, 176, 124, 0.02);
-            box-shadow: inset 0 0 20px rgba(193, 176, 124, 0.05);
+            border: 1px solid;
             backdrop-filter: blur(2px);
         }
-        /* 100px Cube setup */
+        
+        .cube-olive .face { border-color: rgba(193, 176, 124, 0.3); background: rgba(193, 176, 124, 0.02); box-shadow: inset 0 0 20px rgba(193, 176, 124, 0.05); }
+        .cube-emerald .face { border-color: rgba(0, 255, 136, 0.3); background: rgba(0, 255, 136, 0.02); box-shadow: inset 0 0 20px rgba(0, 255, 136, 0.05); }
+        .cube-crimson .face { border-color: rgba(255, 42, 95, 0.3); background: rgba(255, 42, 95, 0.02); box-shadow: inset 0 0 20px rgba(255, 42, 95, 0.05); }
+
         .cube-100 { width: 100px; height: 100px; }
         .cube-100 .face { width: 100px; height: 100px; }
         .cube-100 .front  { transform: translateZ(50px); }
@@ -188,7 +192,6 @@
         .cube-100 .top    { transform: rotateX(90deg) translateZ(50px); }
         .cube-100 .bottom { transform: rotateX(-90deg) translateZ(50px); }
 
-        /* 200px Cube setup */
         .cube-200 { width: 200px; height: 200px; }
         .cube-200 .face { width: 200px; height: 200px; }
         .cube-200 .front  { transform: translateZ(100px); }
@@ -197,6 +200,31 @@
         .cube-200 .right  { transform: rotateY(90deg) translateZ(100px); }
         .cube-200 .top    { transform: rotateX(90deg) translateZ(100px); }
         .cube-200 .bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+        /* 3D Wireframe Spheres */
+        .sphere-3d {
+            position: relative;
+            transform-style: preserve-3d;
+        }
+        .sphere-3d .ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 1px solid;
+            border-radius: 50%;
+        }
+        .sphere-olive .ring { border-color: rgba(193, 176, 124, 0.4); box-shadow: 0 0 15px rgba(193, 176, 124, 0.1); }
+        .sphere-emerald .ring { border-color: rgba(0, 255, 136, 0.3); box-shadow: 0 0 15px rgba(0, 255, 136, 0.1); }
+        .sphere-crimson .ring { border-color: rgba(255, 42, 95, 0.3); box-shadow: 0 0 15px rgba(255, 42, 95, 0.1); }
+        
+        .sphere-3d .ring:nth-child(1) { transform: rotateY(0deg); }
+        .sphere-3d .ring:nth-child(2) { transform: rotateY(45deg); }
+        .sphere-3d .ring:nth-child(3) { transform: rotateY(90deg); }
+        .sphere-3d .ring:nth-child(4) { transform: rotateY(135deg); }
+        .sphere-3d .ring:nth-child(5) { transform: rotateX(90deg); }
+
+        .sphere-150 { width: 150px; height: 150px; }
+        .sphere-250 { width: 250px; height: 250px; }
 
         /* Animations for 3D Geometry */
         @keyframes levitateSpinFast {
@@ -209,8 +237,15 @@
             50% { transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg) translateY(60px); }
             100% { transform: rotateX(0deg) rotateY(360deg) rotateZ(360deg) translateY(0); }
         }
+        @keyframes floatRotate {
+            0% { transform: rotateX(45deg) rotateY(0deg) translateY(0px); }
+            50% { transform: rotateX(45deg) rotateY(180deg) translateY(-30px); }
+            100% { transform: rotateX(45deg) rotateY(360deg) translateY(0px); }
+        }
+        
         .anim-3d-fast { animation: levitateSpinFast 35s infinite linear; }
         .anim-3d-slow { animation: levitateSpinSlow 50s infinite linear; }
+        .anim-sphere { animation: floatRotate 40s infinite linear; }
 
         @keyframes floatingData {
             0% { transform: translateY(0) translateX(0); opacity: 0; }
@@ -340,24 +375,34 @@
     <!-- 3D GEOMETRIC BACKGROUND (Fixed to Screen) -->
     <div class="perspective-env">
         <div class="absolute top-[15%] right-[10%] opacity-40">
-            <div class="cube-3d cube-100 anim-3d-fast">
+            <div class="cube-3d cube-100 cube-olive anim-3d-fast">
                 <div class="face front"></div><div class="face back"></div>
                 <div class="face left"></div><div class="face right"></div>
                 <div class="face top"></div><div class="face bottom"></div>
             </div>
         </div>
-        <div class="absolute bottom-[20%] left-[5%] opacity-20">
-            <div class="cube-3d cube-200 anim-3d-slow">
+        <div class="absolute top-[50%] left-[8%] opacity-30">
+            <div class="sphere-3d sphere-150 sphere-emerald anim-sphere">
+                <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
+            </div>
+        </div>
+        <div class="absolute bottom-[20%] left-[10%] opacity-20">
+            <div class="cube-3d cube-200 cube-olive anim-3d-slow">
                 <div class="face front"></div><div class="face back"></div>
                 <div class="face left"></div><div class="face right"></div>
                 <div class="face top"></div><div class="face bottom"></div>
             </div>
         </div>
-        <div class="absolute top-[60%] right-[30%] opacity-30">
-            <div class="cube-3d cube-100 anim-3d-fast" style="animation-direction: reverse; animation-duration: 40s;">
+        <div class="absolute top-[70%] right-[25%] opacity-30">
+            <div class="cube-3d cube-100 cube-emerald anim-3d-fast" style="animation-direction: reverse; animation-duration: 40s;">
                 <div class="face front"></div><div class="face back"></div>
                 <div class="face left"></div><div class="face right"></div>
                 <div class="face top"></div><div class="face bottom"></div>
+            </div>
+        </div>
+        <div class="absolute top-[25%] left-[45%] opacity-20">
+            <div class="sphere-3d sphere-250 sphere-crimson anim-sphere" style="animation-direction: reverse; animation-duration: 60s;">
+                <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
             </div>
         </div>
     </div>
@@ -400,12 +445,12 @@
         <div class="max-w-7xl mx-auto w-full z-10 space-y-8 my-auto relative">
             
             <div class="flex flex-wrap items-center justify-between gap-4 animate-in" style="animation-delay: 0.1s;">
-                <span class="font-mono text-[10px] md:text-xs tracking-[0.3em] text-gray-400 uppercase">
+                <span class="font-mono text-[10px] md:text-xs tracking-[0.3em] text-white uppercase font-semibold">
                     01 / 05 &nbsp;•&nbsp; FINANCIAL CRIME • AML • EDD • FCC
                 </span>
                 <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-olive/30 backdrop-blur-md shadow-[0_0_15px_rgba(193,176,124,0.15)]">
                     <span class="w-2 h-2 rounded-full bg-emerald animate-pulse"></span>
-                    <span class="font-mono text-[11px] tracking-widest text-white uppercase font-medium">AUS PR APPLICANT 2027-2028 • ENROUTE MLRO DUTIES</span>
+                    <span class="font-mono text-[11px] tracking-widest text-white uppercase font-bold">AUS PR APPLICANT 2027-2028 • ENROUTE MLRO DUTIES</span>
                 </div>
             </div>
 
@@ -433,10 +478,10 @@
             </div>
 
             <div class="text-center space-y-4 max-w-2xl mx-auto animate-in pt-8" style="animation-delay: 0.5s;">
-                <p class="font-mono text-xs md:text-sm tracking-[0.15em] text-olive uppercase font-semibold">
+                <p class="font-mono text-xs md:text-sm tracking-[0.15em] text-olive uppercase font-bold">
                     AML RISK • FINANCIAL CRIME • EDD • BLOCKCHAIN COMPLIANCE
                 </p>
-                <p class="text-base md:text-xl text-gray-200 font-light leading-relaxed">
+                <p class="text-base md:text-xl text-white font-medium leading-relaxed">
                     Building stronger financial crime controls through intelligence, investigation and risk.
                 </p>
             </div>
@@ -444,11 +489,11 @@
 
         <div class="max-w-7xl mx-auto w-full z-10 pt-8 animate-in" style="animation-delay: 0.7s;">
             <a href="#operator" class="group inline-flex flex-col space-y-3 cursor-pointer mx-auto items-center smooth-scroll-link">
-                <span class="font-mono text-[10px] tracking-[0.25em] text-gray-400 uppercase">
+                <span class="font-mono text-[10px] tracking-[0.25em] text-white uppercase font-bold">
                     01 / 05 &nbsp;•&nbsp; START HERE
                 </span>
                 <div class="flex items-center space-x-4">
-                    <span class="font-mono text-sm tracking-[0.2em] text-white group-hover:text-olive transition-colors">
+                    <span class="font-mono text-sm tracking-[0.2em] text-white font-bold group-hover:text-olive transition-colors">
                         CHECK MY WORK
                     </span>
                     <span class="transform group-hover:translate-y-2 transition-transform duration-300 text-olive rotate-90">
@@ -471,12 +516,12 @@
         <div class="max-w-7xl mx-auto relative z-10">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-20 reveal-up">
                 <div>
-                    <span class="font-mono text-[11px] tracking-[0.25em] text-olive uppercase block mb-4">02 / 05 • THE OPERATOR</span>
+                    <span class="font-mono text-[11px] tracking-[0.25em] text-olive uppercase block mb-4 font-bold">02 / 05 • THE OPERATOR</span>
                     <h2 class="font-sans font-extrabold text-4xl md:text-6xl tracking-tight text-white pop-out">
                         Financial Crime Intelligence<br/>with an Executive Mindset.
                     </h2>
                 </div>
-                <p class="font-mono text-xs text-gray-300 mt-4 md:mt-0 max-w-xs font-medium leading-relaxed">
+                <p class="font-mono text-xs text-white mt-4 md:mt-0 max-w-xs font-semibold leading-relaxed">
                     Executive profile documenting operational mastery across Morgan Stanley and Currencies Direct.
                 </p>
             </div>
@@ -523,13 +568,13 @@
                             </svg>
 
                             <!-- Floating Glass Panels with AML Data -->
-                            <div class="absolute top-[15%] left-[5%] bg-black/70 border border-crimson/30 rounded-lg p-3 backdrop-blur-md shadow-xl font-mono text-[10px] text-gray-200 font-medium transform translateZ(40px)">
+                            <div class="absolute top-[15%] left-[5%] bg-black/70 border border-crimson/30 rounded-lg p-3 backdrop-blur-md shadow-xl font-mono text-[10px] text-white font-semibold transform translateZ(40px)">
                                 <div class="text-crimson font-bold mb-1 flex items-center gap-1"><span class="w-1.5 h-1.5 bg-crimson rounded-full animate-pulse"></span> FLAGGED TRX</div>
                                 <div>AMT: $4,500,000</div>
                                 <div>ORG: SHELL CORP</div>
                             </div>
                             
-                            <div class="absolute bottom-[15%] right-[5%] bg-black/70 border border-emerald/30 rounded-lg p-3 backdrop-blur-md shadow-xl font-mono text-[10px] text-gray-200 font-medium transform translateZ(30px)">
+                            <div class="absolute bottom-[15%] right-[5%] bg-black/70 border border-emerald/30 rounded-lg p-3 backdrop-blur-md shadow-xl font-mono text-[10px] text-white font-semibold transform translateZ(30px)">
                                 <div class="text-emerald font-bold mb-1 flex items-center gap-1"><span class="w-1.5 h-1.5 bg-emerald rounded-full"></span> CLEARED SOF</div>
                                 <div>RISK: LOW</div>
                                 <div>STATUS: VERIFIED</div>
@@ -544,11 +589,11 @@
                 </div>
 
                 <div class="lg:col-span-7 space-y-8 reveal-up" style="transition-delay: 0.2s;">
-                    <div class="space-y-6 text-gray-200 text-lg md:text-xl font-medium leading-relaxed font-sans">
+                    <div class="space-y-6 text-white text-lg md:text-xl font-medium leading-relaxed font-sans">
                         <p>
                             Financial crime compliance professional with <strong class="text-white font-extrabold">5+ years</strong> of comprehensive experience across <strong class="text-white font-extrabold">Morgan Stanley Wealth Management</strong> and <span class="text-white font-extrabold">Currencies Direct</span>. Specializing in <strong class="text-white font-extrabold">Enhanced Due Diligence (EDD)</strong> for High and High+ risk and UHNW/HNW clients across <span class="text-olive font-extrabold">APAC, EMEA, and MENA</span>.
                         </p>
-                        <p class="text-gray-300 text-base font-medium">
+                        <p class="text-white text-base font-medium">
                             Worked directly with an Australian MLRO on <strong class="text-white font-extrabold">SMR submissions</strong>, high-risk escalations, and strict <span class="text-white font-extrabold">AUSTRAC obligations</span>. Subject matter expert for complex <strong class="text-white font-extrabold">source of wealth / source of funds (SOW/SOF)</strong> reviews, analyst mentoring, and builder of <span class="text-olive font-extrabold">AI-assisted Microsoft Copilot workflows</span> for AML research.
                         </p>
                     </div>
@@ -557,19 +602,19 @@
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-10 border-t border-white/10 font-mono">
                         <div class="pop-out group">
                             <div class="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight"><span class="counter" data-target="220">0</span>+</div>
-                            <div class="text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-widest leading-tight group-hover:text-white transition-colors">High-Risk<br/>EDD Reviews</div>
+                            <div class="text-[10px] md:text-xs text-white font-bold uppercase tracking-widest leading-tight transition-colors">High-Risk<br/>EDD Reviews</div>
                         </div>
                         <div class="pop-out group" style="transition-delay: 0.1s">
                             <div class="text-4xl md:text-5xl font-bold text-olive mb-2 tracking-tight"><span class="counter" data-target="100">0</span>+</div>
-                            <div class="text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-widest leading-tight group-hover:text-olive transition-colors">UHNW<br/>SOW / SOF</div>
+                            <div class="text-[10px] md:text-xs text-white font-bold uppercase tracking-widest leading-tight transition-colors">UHNW<br/>SOW / SOF</div>
                         </div>
                         <div class="pop-out group" style="transition-delay: 0.2s">
                             <div class="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight"><span class="counter" data-target="3000">0</span>+</div>
-                            <div class="text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-widest leading-tight group-hover:text-white transition-colors">Clients / Users<br/>Onboarded</div>
+                            <div class="text-[10px] md:text-xs text-white font-bold uppercase tracking-widest leading-tight transition-colors">Clients / Users<br/>Onboarded</div>
                         </div>
                         <div class="pop-out group" style="transition-delay: 0.3s">
                             <div class="text-4xl md:text-5xl font-bold text-emerald mb-2 tracking-tight"><span class="counter" data-target="1000">0</span>+</div>
-                            <div class="text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-widest leading-tight group-hover:text-emerald transition-colors">Sanctions<br/>Hits Cleared</div>
+                            <div class="text-[10px] md:text-xs text-white font-bold uppercase tracking-widest leading-tight transition-colors">Sanctions<br/>Hits Cleared</div>
                         </div>
                     </div>
                 </div>
@@ -586,7 +631,7 @@
                 <h2 class="font-sans font-extrabold text-4xl md:text-6xl tracking-tight text-white">
                     Operational Footprint
                 </h2>
-                <p class="font-sans text-sm text-gray-300 font-medium mt-3">From operational discipline to financial crime intelligence.</p>
+                <p class="font-sans text-sm text-white font-medium mt-3">From operational discipline to financial crime intelligence.</p>
             </div>
 
             <div class="relative pl-6 md:pl-12 border-l border-white/20 space-y-16">
@@ -597,11 +642,11 @@
                         <div>
                             <span class="font-mono text-xs text-olive font-bold tracking-widest uppercase mb-2 block">MORGAN STANLEY • 2024 — PRESENT</span>
                             <h3 class="font-sans font-extrabold text-2xl md:text-3xl text-white">Associate, EDD & Compliance</h3>
-                            <p class="text-sm font-sans font-medium text-gray-300 mt-1">Wealth Management & High-Risk Intelligence</p>
+                            <p class="text-sm font-sans font-semibold text-gray-100 mt-1">Wealth Management & High-Risk Intelligence</p>
                         </div>
-                        <span class="font-mono text-xs font-bold text-gray-200 mt-2 md:mt-0 bg-white/10 px-3.5 py-1.5 rounded">MUMBAI / GLOBAL</span>
+                        <span class="font-mono text-xs font-bold text-white mt-2 md:mt-0 bg-white/10 px-3.5 py-1.5 rounded">MUMBAI / GLOBAL</span>
                     </div>
-                    <ul class="space-y-4 text-gray-200 text-sm md:text-base font-medium leading-relaxed font-sans pop-out">
+                    <ul class="space-y-4 text-white text-sm md:text-base font-medium leading-relaxed font-sans pop-out">
                         <li class="flex items-start"><span class="text-olive font-mono mr-3 font-bold text-base">01</span> Completed 220+ end-to-end EDD reviews on High and High+ risk wealth management clients, assessing complex ownership structures and trusts.</li>
                         <li class="flex items-start"><span class="text-olive font-mono mr-3 font-bold text-base">02</span> Performed SOW/SOF analysis on 100+ Ultra High Net Worth (UHNW) individuals across APAC and EMEA.</li>
                         <li class="flex items-start"><span class="text-olive font-mono mr-3 font-bold text-base">03</span> Designed three AI-assisted Microsoft Copilot workflows for negative-media analysis and public-company affiliation research.</li>
@@ -615,11 +660,11 @@
                         <div>
                             <span class="font-mono text-xs font-bold text-emerald tracking-widest uppercase mb-2 block">CURRENCIES DIRECT • 2022 — 2024</span>
                             <h3 class="font-sans font-extrabold text-2xl md:text-3xl text-white">AML Compliance Officer</h3>
-                            <p class="text-sm font-sans font-medium text-gray-300 mt-1">AUSTRAC Obligations & Cross-Border Compliance</p>
+                            <p class="text-sm font-sans font-semibold text-gray-100 mt-1">AUSTRAC Obligations & Cross-Border Compliance</p>
                         </div>
-                        <span class="font-mono text-xs font-bold text-gray-200 mt-2 md:mt-0 bg-white/10 px-3.5 py-1.5 rounded">MUMBAI / APAC / EMEA</span>
+                        <span class="font-mono text-xs font-bold text-white mt-2 md:mt-0 bg-white/10 px-3.5 py-1.5 rounded">MUMBAI / APAC / EMEA</span>
                     </div>
-                    <ul class="space-y-4 text-gray-200 text-sm md:text-base font-medium leading-relaxed font-sans pop-out">
+                    <ul class="space-y-4 text-white text-sm md:text-base font-medium leading-relaxed font-sans pop-out">
                         <li class="flex items-start"><span class="text-emerald font-mono mr-3 font-bold text-base">01</span> Worked directly with the Australian MLRO on high-risk escalations, SMR submissions and AUSTRAC regulatory obligations.</li>
                         <li class="flex items-start"><span class="text-emerald font-mono mr-3 font-bold text-base">02</span> Onboarded 3,000+ clients/users over two years, balancing customer growth with strict AML/CTF controls.</li>
                         <li class="flex items-start"><span class="text-emerald font-mono mr-3 font-bold text-base">03</span> Cleared 1,000+ sanctions screening hits (OFAC, UN, EU) and conducted adverse media investigations using World-Check.</li>
@@ -627,18 +672,18 @@
                 </div>
 
                 <div class="relative reveal-up editorial-card p-8 md:p-12 rounded-2xl" data-tilt data-tilt-max="3" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.1">
-                    <span class="absolute -left-[31px] md:-left-[55px] top-10 w-4 h-4 rounded-full bg-gray-400 border-4 border-[#020204] pop-out"></span>
+                    <span class="absolute -left-[31px] md:-left-[55px] top-10 w-4 h-4 rounded-full bg-white border-4 border-[#020204] pop-out"></span>
                     <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 pb-6 border-b border-white/10 pop-out">
                         <div>
-                            <span class="font-mono text-xs font-bold text-gray-300 tracking-widest uppercase mb-2 block">FEDEX EXPRESS • 2021 — 2022</span>
+                            <span class="font-mono text-xs font-bold text-white tracking-widest uppercase mb-2 block">FEDEX EXPRESS • 2021 — 2022</span>
                             <h3 class="font-sans font-extrabold text-2xl md:text-3xl text-white">Customer Service Specialist</h3>
-                            <p class="text-sm font-sans font-medium text-gray-300 mt-1">Documentation & Risk Control Foundation</p>
+                            <p class="text-sm font-sans font-semibold text-gray-100 mt-1">Documentation & Risk Control Foundation</p>
                         </div>
-                        <span class="font-mono text-xs font-bold text-gray-200 mt-2 md:mt-0 bg-white/10 px-3.5 py-1.5 rounded">MUMBAI</span>
+                        <span class="font-mono text-xs font-bold text-white mt-2 md:mt-0 bg-white/10 px-3.5 py-1.5 rounded">MUMBAI</span>
                     </div>
-                    <ul class="space-y-4 text-gray-200 text-sm md:text-base font-medium leading-relaxed font-sans pop-out">
-                        <li class="flex items-start"><span class="text-gray-400 font-mono mr-3 font-bold text-base">01</span> Verified customer documentation against customs, export-control and anti-fraud procedures.</li>
-                        <li class="flex items-start"><span class="text-gray-400 font-mono mr-3 font-bold text-base">02</span> Identified and escalated suspicious documentation and transaction patterns in accordance with regulatory protocols.</li>
+                    <ul class="space-y-4 text-white text-sm md:text-base font-medium leading-relaxed font-sans pop-out">
+                        <li class="flex items-start"><span class="text-white font-mono mr-3 font-bold text-base">01</span> Verified customer documentation against customs, export-control and anti-fraud procedures.</li>
+                        <li class="flex items-start"><span class="text-white font-mono mr-3 font-bold text-base">02</span> Identified and escalated suspicious documentation and transaction patterns in accordance with regulatory protocols.</li>
                     </ul>
                 </div>
 
@@ -674,13 +719,13 @@
                     </div>
                     <div class="pop-out">
                         <h3 class="font-sans font-extrabold text-2xl text-white mb-3">AML / FCC</h3>
-                        <p class="text-sm font-sans font-medium text-gray-300 leading-relaxed">Core compliance & due diligence operations.</p>
+                        <p class="text-sm font-sans font-medium text-white leading-relaxed">Core compliance & due diligence operations.</p>
                     </div>
                     <div class="flex flex-wrap gap-3 font-mono text-xs font-bold pop-out">
                         <span class="px-3 py-1.5 bg-transparent text-olive rounded-lg border border-olive/50 hover:bg-olive hover:text-black transition-colors cursor-pointer">EDD</span>
-                        <span class="px-3 py-1.5 bg-transparent text-gray-300 rounded-lg border border-gray-600 hover:border-olive hover:bg-olive hover:text-black transition-colors cursor-pointer">KYC / CDD</span>
-                        <span class="px-3 py-1.5 bg-transparent text-gray-300 rounded-lg border border-gray-600 hover:border-olive hover:bg-olive hover:text-black transition-colors cursor-pointer">AML / CTF</span>
-                        <span class="px-3 py-1.5 bg-transparent text-gray-300 rounded-lg border border-gray-600 hover:border-olive hover:bg-olive hover:text-black transition-colors cursor-pointer">PEP</span>
+                        <span class="px-3 py-1.5 bg-transparent text-white rounded-lg border border-gray-500 hover:border-olive hover:bg-olive hover:text-black transition-colors cursor-pointer">KYC / CDD</span>
+                        <span class="px-3 py-1.5 bg-transparent text-white rounded-lg border border-gray-500 hover:border-olive hover:bg-olive hover:text-black transition-colors cursor-pointer">AML / CTF</span>
+                        <span class="px-3 py-1.5 bg-transparent text-white rounded-lg border border-gray-500 hover:border-olive hover:bg-olive hover:text-black transition-colors cursor-pointer">PEP</span>
                     </div>
                 </div>
 
@@ -691,13 +736,13 @@
                     </div>
                     <div class="pop-out">
                         <h3 class="font-sans font-extrabold text-2xl text-white mb-3">REGULATORY</h3>
-                        <p class="text-sm font-sans font-medium text-gray-300 leading-relaxed">Global statutory standards & reporting.</p>
+                        <p class="text-sm font-sans font-medium text-white leading-relaxed">Global statutory standards & reporting.</p>
                     </div>
                     <div class="flex flex-wrap gap-3 font-mono text-xs font-bold pop-out">
                         <span class="px-3 py-1.5 bg-transparent text-emerald rounded-lg border border-emerald/50 hover:bg-emerald hover:text-black transition-colors cursor-pointer">AUSTRAC</span>
-                        <span class="px-3 py-1.5 bg-transparent text-gray-300 rounded-lg border border-gray-600 hover:border-emerald hover:bg-emerald hover:text-black transition-colors cursor-pointer">FATF</span>
-                        <span class="px-3 py-1.5 bg-transparent text-gray-300 rounded-lg border border-gray-600 hover:border-emerald hover:bg-emerald hover:text-black transition-colors cursor-pointer">OFAC</span>
-                        <span class="px-3 py-1.5 bg-transparent text-gray-300 rounded-lg border border-gray-600 hover:border-emerald hover:bg-emerald hover:text-black transition-colors cursor-pointer">UN</span>
+                        <span class="px-3 py-1.5 bg-transparent text-white rounded-lg border border-gray-500 hover:border-emerald hover:bg-emerald hover:text-black transition-colors cursor-pointer">FATF</span>
+                        <span class="px-3 py-1.5 bg-transparent text-white rounded-lg border border-gray-500 hover:border-emerald hover:bg-emerald hover:text-black transition-colors cursor-pointer">OFAC</span>
+                        <span class="px-3 py-1.5 bg-transparent text-white rounded-lg border border-gray-500 hover:border-emerald hover:bg-emerald hover:text-black transition-colors cursor-pointer">UN</span>
                     </div>
                 </div>
 
@@ -708,12 +753,12 @@
                     </div>
                     <div class="pop-out">
                         <h3 class="font-sans font-extrabold text-2xl text-white mb-3">INTELLIGENCE</h3>
-                        <p class="text-sm font-sans font-medium text-gray-300 leading-relaxed">Advanced wealth & structural risk research.</p>
+                        <p class="text-sm font-sans font-medium text-white leading-relaxed">Advanced wealth & structural risk research.</p>
                     </div>
                     <div class="flex flex-wrap gap-3 font-mono text-xs font-bold pop-out">
                         <span class="px-3 py-1.5 bg-transparent text-amber rounded-lg border border-amber/50 hover:bg-amber hover:text-black transition-colors cursor-pointer">SOW / SOF</span>
-                        <span class="px-3 py-1.5 bg-transparent text-gray-300 rounded-lg border border-gray-600 hover:border-amber hover:bg-amber hover:text-black transition-colors cursor-pointer">Media</span>
-                        <span class="px-3 py-1.5 bg-transparent text-gray-300 rounded-lg border border-gray-600 hover:border-amber hover:bg-amber hover:text-black transition-colors cursor-pointer">OSINT</span>
+                        <span class="px-3 py-1.5 bg-transparent text-white rounded-lg border border-gray-500 hover:border-amber hover:bg-amber hover:text-black transition-colors cursor-pointer">Media</span>
+                        <span class="px-3 py-1.5 bg-transparent text-white rounded-lg border border-gray-500 hover:border-amber hover:bg-amber hover:text-black transition-colors cursor-pointer">OSINT</span>
                     </div>
                 </div>
 
@@ -724,12 +769,12 @@
                     </div>
                     <div class="pop-out">
                         <h3 class="font-sans font-extrabold text-2xl text-white mb-3">TECHNOLOGY</h3>
-                        <p class="text-sm font-sans font-medium text-gray-300 leading-relaxed">Screening engines & AI workflows.</p>
+                        <p class="text-sm font-sans font-medium text-white leading-relaxed">Screening engines & AI workflows.</p>
                     </div>
                     <div class="flex flex-wrap gap-3 font-mono text-xs font-bold pop-out">
                         <span class="px-3 py-1.5 bg-transparent text-crimson rounded-lg border border-crimson/50 hover:bg-crimson hover:text-white transition-colors cursor-pointer">World-Check</span>
-                        <span class="px-3 py-1.5 bg-transparent text-gray-300 rounded-lg border border-gray-600 hover:border-crimson hover:bg-crimson hover:text-white transition-colors cursor-pointer">Copilot AI</span>
-                        <span class="px-3 py-1.5 bg-transparent text-gray-300 rounded-lg border border-gray-600 hover:border-crimson hover:bg-crimson hover:text-white transition-colors cursor-pointer">Alteryx</span>
+                        <span class="px-3 py-1.5 bg-transparent text-white rounded-lg border border-gray-500 hover:border-crimson hover:bg-crimson hover:text-white transition-colors cursor-pointer">Copilot AI</span>
+                        <span class="px-3 py-1.5 bg-transparent text-white rounded-lg border border-gray-500 hover:border-crimson hover:bg-crimson hover:text-white transition-colors cursor-pointer">Alteryx</span>
                     </div>
                 </div>
 
@@ -754,10 +799,10 @@
                 
                 <div class="editorial-card p-10 rounded-2xl flex flex-col justify-between space-y-12 reveal-up" data-tilt data-tilt-max="4" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.15">
                     <div class="space-y-6 pop-out">
-                        <div class="font-mono text-sm font-bold text-gray-500">01</div>
+                        <div class="font-mono text-sm font-bold text-gray-400">01</div>
                         <h3 class="font-sans font-extrabold text-3xl md:text-4xl text-white">AML Consultant</h3>
                         <p class="font-mono text-xs font-bold text-olive uppercase tracking-wider">Freelance / Remote</p>
-                        <p class="text-gray-200 text-sm md:text-base font-medium font-sans leading-relaxed">
+                        <p class="text-white text-sm md:text-base font-medium font-sans leading-relaxed">
                             AML / Financial Crime consulting support for organizations looking to strengthen risk controls, EDD processes, compliance operations and financial crime frameworks.
                         </p>
                     </div>
@@ -768,10 +813,10 @@
 
                 <div class="editorial-card p-10 rounded-2xl flex flex-col justify-between space-y-12 reveal-up" style="transition-delay: 0.1s;" data-tilt data-tilt-max="4" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.15">
                     <div class="space-y-6 pop-out">
-                        <div class="font-mono text-sm font-bold text-gray-500">02</div>
+                        <div class="font-mono text-sm font-bold text-gray-400">02</div>
                         <h3 class="font-sans font-extrabold text-3xl md:text-4xl text-white">AML Mentor</h3>
                         <p class="font-mono text-xs font-bold text-emerald uppercase tracking-wider">Advisory / Career</p>
-                        <p class="text-gray-200 text-sm md:text-base font-medium font-sans leading-relaxed">
+                        <p class="text-white text-sm md:text-base font-medium font-sans leading-relaxed">
                             Guidance for professionals navigating AML career transitions, financial crime specialization and long-term career development.
                         </p>
                     </div>
@@ -782,10 +827,10 @@
 
                 <div class="editorial-card p-10 rounded-2xl flex flex-col justify-between space-y-12 reveal-up" style="transition-delay: 0.2s;" data-tilt data-tilt-max="4" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.15">
                     <div class="space-y-6 pop-out">
-                        <div class="font-mono text-sm font-bold text-gray-500">03</div>
+                        <div class="font-mono text-sm font-bold text-gray-400">03</div>
                         <h3 class="font-sans font-extrabold text-3xl md:text-4xl text-white">Compliance Officer</h3>
                         <p class="font-mono text-xs font-bold text-crimson uppercase tracking-wider">Full-Time / Global</p>
-                        <p class="text-gray-200 text-sm md:text-base font-medium font-sans leading-relaxed">
+                        <p class="text-white text-sm md:text-base font-medium font-sans leading-relaxed">
                             Open to AML, FCC, EDD, KYC, Financial Crime and compliance opportunities across global markets.
                         </p>
                     </div>
@@ -808,7 +853,7 @@
                 <h2 class="font-sans font-extrabold text-5xl md:text-7xl tracking-tight text-white pop-out">
                     LET'S BUILD WHAT'S NEXT.
                 </h2>
-                <p class="text-gray-300 font-medium text-base md:text-lg max-w-lg mx-auto font-sans">
+                <p class="text-white font-medium text-base md:text-lg max-w-lg mx-auto font-sans">
                     Financial crime is evolving. So should the people protecting it.
                 </p>
             </div>
@@ -818,7 +863,7 @@
                 
                 <div class="pop-out">
                     <label class="block font-mono text-[11px] font-bold text-gray-400 uppercase mb-1">Recipient (Pre-filled)</label>
-                    <input type="text" readonly value="christopherhanso.aml@gmail.com" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 font-mono text-xs text-gray-300 focus:outline-none cursor-not-allowed">
+                    <input type="text" readonly value="christopherhanso.aml@gmail.com" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 font-mono text-xs text-white focus:outline-none cursor-not-allowed">
                 </div>
 
                 <div class="pop-out">
@@ -836,13 +881,13 @@
                 </div>
             </form>
 
-            <div class="pt-12 flex flex-wrap justify-center items-center gap-6 font-mono text-xs font-bold tracking-[0.2em] text-gray-400">
+            <div class="pt-12 flex flex-wrap justify-center items-center gap-6 font-mono text-xs font-bold tracking-[0.2em] text-white">
                 <a href="https://www.linkedin.com/in/christopher-hanso-cbkp-972ba71a0/" target="_blank" class="hover:text-olive hover:scale-110 transition-all">LINKEDIN</a>
-                <span class="text-gray-700">•</span>
+                <span class="text-gray-600">•</span>
                 <span class="hover:text-olive transition-all">+91-7058075705</span>
             </div>
             
-            <div class="pt-4 text-[10px] font-mono font-bold text-gray-600 tracking-widest uppercase">
+            <div class="pt-4 text-[10px] font-mono font-bold text-gray-500 tracking-widest uppercase">
                 © 2026 CHRISTOPHER HANSO • ALL RIGHTS RESERVED
             </div>
         </div>
@@ -850,14 +895,14 @@
 
     <!-- INTERACTIVE SCRIPTS -->
     <script>
-        // Initialize Lenis Smooth Scroll for premium scrolling feel
+        // Initialize Lenis Smooth Scroll for ultra premium scrolling feel
         const lenis = new Lenis({
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            duration: 1.5, // Increased slightly for a 'glassier' glide
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
             direction: 'vertical',
             gestureDirection: 'vertical',
             smooth: true,
-            mouseMultiplier: 1,
+            mouseMultiplier: 0.9, 
             smoothTouch: false,
             touchMultiplier: 2,
             infinite: false,
