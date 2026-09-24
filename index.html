@@ -59,24 +59,6 @@
             .cursor-sparkle { display: block; }
         }
 
-        /* Background-Only Scanline (Does not overlap text/photos) */
-        .scanline-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            overflow: hidden;
-            z-index: 0;
-        }
-        .scanline-bg::after {
-            content: '';
-            position: absolute;
-            top: -10vh; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(0,240,255,0.7), transparent);
-            box-shadow: 0 0 15px rgba(0,240,255,0.5);
-            animation: scan 8s linear infinite;
-        }
-        @keyframes scan { 0% { top: -10vh; } 100% { top: 110vh; } }
-
         /* Glass Navigation */
         .glass-nav {
             background: rgba(2, 2, 4, 0.85);
@@ -99,7 +81,7 @@
             box-shadow: 0 25px 50px -15px rgba(0, 240, 255, 0.2);
         }
 
-        /* CINEMATIC OVERLAPPING HERO COMPOSITION (Based on Reference Image) */
+        /* CINEMATIC OVERLAPPING HERO COMPOSITION */
         .hero-overlap-container {
             position: relative;
             width: 100%;
@@ -131,8 +113,18 @@
             text-align: center;
             pointer-events: none;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+        }
+
+        .hero-first-name {
+            font-size: clamp(1.2rem, 4vw, 3rem);
+            font-weight: 300;
+            letter-spacing: 0.4em;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 5px 20px rgba(0,0,0,0.9);
+            margin-bottom: -1rem; 
         }
 
         .hero-huge-name {
@@ -141,11 +133,12 @@
             letter-spacing: -0.05em;
             line-height: 0.8;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.92);
-            mix-blend-mode: difference;
+            color: #FFFFFF;
+            text-shadow: 0 10px 40px rgba(0,0,0,0.8);
             transition: all 0.5s ease;
             cursor: default;
             pointer-events: auto;
+            margin-top: 3rem; /* Pushed HANSO down */
         }
 
         /* Interactive Multi-State Hover FX for Name */
@@ -170,6 +163,7 @@
         }
         @keyframes spinGlobe { 100% { transform: rotate(360deg); } }
 
+        /* Scroll Reveal animations (for content below hero) */
         .reveal-up {
             opacity: 0;
             transform: translateY(30px);
@@ -178,6 +172,16 @@
         .reveal-up.active {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* On-Load Animations (fixes mobile hero issue) */
+        .animate-in {
+            animation: fadeUpIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        @keyframes fadeUpIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         ::-webkit-scrollbar { width: 5px; }
@@ -209,11 +213,11 @@
         </div>
     </nav>
 
-    <!-- 01 — HERO (Editorial Overlap Composition with Color Photo & Glow FX) -->
+    <!-- 01 — HERO (Editorial Overlap Composition) -->
     <section id="hero" class="relative min-h-screen flex flex-col justify-between pt-32 pb-16 px-6 md:px-12 overflow-hidden">
         
-        <!-- Background-only scanline (avoids covering texts/photos) -->
-        <div class="scanline-bg"></div>
+        <!-- Horizontal Glowing Cyan Line -->
+        <div class="absolute top-[60%] left-0 w-full h-[2px] bg-cyan shadow-[0_0_20px_2px_rgba(0,240,255,0.7)] z-[1]"></div>
 
         <svg class="rotating-globe hidden lg:block" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="48" fill="none" stroke="#00F0FF" stroke-width="0.3"/>
@@ -227,7 +231,7 @@
         <div class="max-w-7xl mx-auto w-full z-10 space-y-8 my-auto">
             
             <!-- Top Status Row -->
-            <div class="flex flex-wrap items-center justify-between gap-4 reveal-up">
+            <div class="flex flex-wrap items-center justify-between gap-4 animate-in" style="animation-delay: 0.1s;">
                 <span class="font-mono text-[10px] md:text-xs tracking-[0.3em] text-gray-400 uppercase">
                     01 / 05 &nbsp;•&nbsp; FINANCIAL CRIME • AML • EDD • FCC
                 </span>
@@ -237,16 +241,17 @@
                 </div>
             </div>
 
-            <!-- Cinematic Overlapping Photo & Name Composition (Reference Style) -->
-            <div class="hero-overlap-container reveal-up" style="transition-delay: 0.1s;">
+            <!-- Cinematic Overlapping Photo & Name Composition -->
+            <div class="hero-overlap-container animate-in" style="animation-delay: 0.3s;">
                 <img src="Photo.jpg" alt="Christopher Hanso" class="hero-photo-layer" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop'" />
                 <div class="hero-typography-layer">
+                    <h2 class="hero-first-name font-sans">CHRISTOPHER</h2>
                     <h1 class="hero-huge-name" title="Hover for Aura FX">HANSO</h1>
                 </div>
             </div>
 
             <!-- Subhead & Statement -->
-            <div class="text-center space-y-4 max-w-2xl mx-auto reveal-up" style="transition-delay: 0.2s;">
+            <div class="text-center space-y-4 max-w-2xl mx-auto animate-in" style="animation-delay: 0.5s;">
                 <p class="font-mono text-xs md:text-sm tracking-[0.15em] text-cyan uppercase font-semibold">
                     AML RISK • FINANCIAL CRIME • EDD • BLOCKCHAIN COMPLIANCE
                 </p>
@@ -257,7 +262,7 @@
         </div>
 
         <!-- Check My Work CTA -->
-        <div class="max-w-7xl mx-auto w-full z-10 pt-8 reveal-up" style="transition-delay: 0.3s;">
+        <div class="max-w-7xl mx-auto w-full z-10 pt-8 animate-in" style="animation-delay: 0.7s;">
             <a href="#operator" class="group inline-flex flex-col space-y-3 cursor-pointer mx-auto items-center">
                 <span class="font-mono text-[10px] tracking-[0.25em] text-gray-400 uppercase">
                     01 / 05 &nbsp;•&nbsp; START HERE
@@ -632,7 +637,7 @@
             });
         });
 
-        // Scroll Reveal Observer
+        // Scroll Reveal Observer (Only for non-hero sections now to fix mobile loading issue)
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
