@@ -25,7 +25,6 @@
                         base: '#020204',
                         surface: '#07080B',
                         card: '#0B0D11',
-                        line: '#1A1E24',
                         cyan: '#00F0FF',
                         crimson: '#FF2A5F',
                         emerald: '#00FF88',
@@ -66,7 +65,6 @@
         .glass-nav {
             background: rgba(2, 2, 4, 0.85);
             backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
@@ -82,131 +80,115 @@
             border-color: rgba(0, 240, 255, 0.5);
             box-shadow: 0 30px 60px -15px rgba(0, 240, 255, 0.15);
         }
-        
-        /* 3D Element popping out of cards */
         .pop-out {
             transform: translateZ(30px);
             transition: transform 0.3s ease;
         }
 
-        /* Scanning Cyan Line */
-        .scanline-animated {
+        /* SCANNING CYAN LINE - Moving horizontally across the display */
+        @keyframes scanHorizontal {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100vw); }
+        }
+        .cyan-scanner-container {
             position: absolute;
+            bottom: -20px; /* Adjust based on hero layout */
             left: 0;
             width: 100%;
             height: 2px;
-            background: #00F0FF;
-            box-shadow: 0 0 30px 3px rgba(0,240,255,0.8);
-            z-index: 1;
-            animation: scanVertical 8s linear infinite;
-            pointer-events: none;
+            background: rgba(0, 240, 255, 0.1); /* Dim track */
+            z-index: 5;
+            overflow: hidden;
         }
-        @keyframes scanVertical {
-            0% { top: -10%; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: 110%; opacity: 0; }
+        .cyan-scanner-beam {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 100%;
+            background: #00F0FF;
+            box-shadow: 0 0 25px 5px rgba(0,240,255,1);
+            animation: scanHorizontal 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
-        /* CINEMATIC OVERLAPPING HERO COMPOSITION */
+        /* CINEMATIC HERO COMPOSITION */
         .hero-overlap-container {
             position: relative;
             width: 100%;
-            min-height: 600px;
+            min-height: 650px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transform-style: preserve-3d;
         }
         
-        /* Photo floating animation */
-        @keyframes cinematicFloat {
-            0% { transform: translateY(0px) translateZ(50px); }
-            50% { transform: translateY(-15px) translateZ(50px); }
-            100% { transform: translateY(0px) translateZ(50px); }
-        }
-
-        /* Hero Photo: Set up for a Transparent Cutout PNG */
-        .hero-photo-layer {
-            position: absolute;
-            z-index: 2; /* In FRONT of solid background text */
-            width: 90%;
-            max-width: 450px; /* Made larger and centered */
-            height: auto;
-            object-fit: contain;
-            /* Removed border and background so a transparent PNG creates the magazine effect */
-            filter: drop-shadow(0 30px 40px rgba(0,0,0,0.9));
-            animation: cinematicFloat 6s ease-in-out infinite;
-        }
-
-        /* Typography Styling */
-        .hero-typography-layer {
-            position: absolute;
-            width: 100%;
+        .hero-huge-name {
+            font-size: clamp(3.5rem, 15vw, 13rem); /* Massive scaling */
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            line-height: 0.85;
+            text-transform: uppercase;
+            color: #FFFFFF;
+            text-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            margin: 0;
+            padding: 0;
             text-align: center;
-            pointer-events: none;
+            white-space: nowrap;
+            transition: all 0.5s ease;
+        }
+
+        /* Name Hover FX */
+        .name-wrapper {
+            position: absolute;
+            inset: 0;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 0;
-            line-height: 0.85;
-        }
-
-        .hero-huge-name {
-            font-size: clamp(3.5rem, 12vw, 12rem);
-            font-weight: 900;
-            letter-spacing: -0.05em;
-            text-transform: uppercase;
-            transition: all 0.5s ease;
-            cursor: default;
-            pointer-events: auto;
-        }
-
-        /* Solid Text (Behind Photo) */
-        .text-solid {
-            color: #FFFFFF;
-            text-shadow: 0 10px 40px rgba(0,0,0,0.8);
-            z-index: 1; 
-        }
-
-        /* Outline Text (In Front of Photo - creates interlocking effect) */
-        .text-outline {
-            color: transparent;
-            -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.7);
-            z-index: 3;
-            pointer-events: none;
-            transform: translateZ(60px); /* 3D push forward */
-        }
-
-        /* Interactive Multi-State Hover FX applied to wrapper to sync both layers */
-        .name-wrapper {
-            position: relative;
-            display: inline-block;
+            z-index: 1; /* Behind Photo */
         }
         .name-wrapper:hover .hero-huge-name {
-            letter-spacing: 0.02em;
+            letter-spacing: 0.01em;
+            color: #00F0FF;
             text-shadow: 0 0 50px rgba(0,240,255,0.8), 0 0 100px rgba(255,42,95,0.5);
             transform: scale(1.02);
         }
-        .name-wrapper:hover .text-solid { color: #00F0FF; }
-        .name-wrapper:hover .text-outline { -webkit-text-stroke: 1.5px rgba(0, 240, 255, 0.9); }
 
-        /* Rotating 3D Globe */
+        /* The Photo styling - Large, Rectangular, Left-Aligned */
+        .hero-photo-container {
+            position: absolute;
+            left: 5%; /* Shifted to the left */
+            z-index: 10; /* OVER the text */
+            width: 35%;
+            min-width: 300px;
+            max-width: 500px;
+        }
+
+        .hero-photo-layer {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 3/4;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 35px 70px rgba(0,0,0,0.95);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Rotating 3D Globe Background */
         .rotating-globe {
             position: absolute;
-            right: 2%;
-            top: 10%;
-            width: 480px;
-            height: 480px;
-            opacity: 0.12;
+            right: 0%;
+            top: 5%;
+            width: 600px;
+            height: 600px;
+            opacity: 0.15;
             pointer-events: none;
             z-index: 0;
             animation: spinGlobe 40s linear infinite;
         }
-        @keyframes spinGlobe { 100% { transform: rotate(360deg) scale(1.1); } }
+        @keyframes spinGlobe { 100% { transform: rotate(360deg); } }
+        @keyframes spinGlobeReverse { 100% { transform: rotate(-360deg); } }
 
-        /* Scroll Reveal animations (for content below hero) */
+        /* Scroll Reveal animations */
         .reveal-up {
             opacity: 0;
             transform: translateY(40px) scale(0.98);
@@ -217,7 +199,6 @@
             transform: translateY(0) scale(1);
         }
 
-        /* On-Load Animations */
         .animate-in {
             animation: cinematicFadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
@@ -237,7 +218,6 @@
 
     <div class="cursor-sparkle" id="cursor"></div>
 
-    <!-- NAVIGATION -->
     <nav class="fixed top-0 w-full z-50 glass-nav px-6 md:px-12 py-5">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <a href="#hero" class="font-mono text-xs tracking-[0.25em] text-white hover:text-cyan transition-colors">
@@ -256,24 +236,19 @@
         </div>
     </nav>
 
-    <!-- 01 — HERO (Editorial Overlap Composition) -->
+    <!-- 01 — HERO (Magazine Overlap Composition) -->
     <section id="hero" class="relative min-h-screen flex flex-col justify-between pt-32 pb-16 px-6 md:px-12 overflow-hidden">
         
-        <!-- Animated Scanning Cyan Line -->
-        <div class="scanline-animated"></div>
-
-        <svg class="rotating-globe hidden lg:block" viewBox="0 0 100 100">
+        <svg class="rotating-globe hidden md:block" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="48" fill="none" stroke="#00F0FF" stroke-width="0.3"/>
             <ellipse cx="50" cy="50" rx="20" ry="48" fill="none" stroke="#00F0FF" stroke-width="0.3"/>
             <ellipse cx="50" cy="50" rx="48" ry="20" fill="none" stroke="#00F0FF" stroke-width="0.3"/>
             <line x1="50" y1="2" x2="50" y2="98" stroke="#00F0FF" stroke-width="0.3"/>
             <line x1="2" y1="50" x2="98" y2="50" stroke="#00F0FF" stroke-width="0.3"/>
-            <circle cx="70" cy="30" r="1.5" fill="#FF2A5F"><animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite"/></circle>
         </svg>
 
-        <div class="max-w-7xl mx-auto w-full z-10 space-y-8 my-auto perspective-container">
+        <div class="max-w-7xl mx-auto w-full z-10 space-y-8 my-auto relative">
             
-            <!-- Top Status Row -->
             <div class="flex flex-wrap items-center justify-between gap-4 animate-in" style="animation-delay: 0.1s;">
                 <span class="font-mono text-[10px] md:text-xs tracking-[0.3em] text-gray-400 uppercase">
                     01 / 05 &nbsp;•&nbsp; FINANCIAL CRIME • AML • EDD • FCC
@@ -284,28 +259,29 @@
                 </div>
             </div>
 
-            <!-- Cinematic Overlapping Photo & Name Composition -->
-            <div class="hero-overlap-container animate-in name-wrapper" style="animation-delay: 0.3s;">
+            <!-- Interlocking Name and Photo Layer -->
+            <div class="hero-overlap-container animate-in" style="animation-delay: 0.3s;">
                 
-                <!-- 1. Background Text Layer (Solid, Behind Photo) -->
-                <div class="hero-typography-layer text-solid">
+                <!-- BACKGROUND TEXT (Centered) -->
+                <div class="name-wrapper w-full">
                     <h1 class="hero-huge-name">CHRISTOPHER</h1>
                     <h1 class="hero-huge-name">HANSO</h1>
                 </div>
 
-                <!-- 2. The Transparent Photo Layer (Middle) -->
-                <!-- USE A BACKGROUND-LESS PNG FOR THE PERFECT CUTOUT EFFECT -->
-                <img src="Photo-Transparent.png" alt="Christopher Hanso" class="hero-photo-layer" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.1" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop'" />
-                
-                <!-- 3. Foreground Text Layer (Outline, Over Photo) -->
-                <div class="hero-typography-layer text-outline">
-                    <h1 class="hero-huge-name">CHRISTOPHER</h1>
-                    <h1 class="hero-huge-name">HANSO</h1>
+                <!-- ENLARGED PHOTO (Left-Aligned, Overlapping the text) -->
+                <div class="hero-photo-container" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
+                    <img src="Photo.jpg" alt="Christopher Hanso" class="hero-photo-layer" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop'" />
                 </div>
                 
             </div>
 
-            <!-- Subhead & Statement -->
+            <!-- ANIMATED HORIZONTAL CYAN LINE -->
+            <div class="relative w-full py-10 animate-in" style="animation-delay: 0.4s;">
+                <div class="cyan-scanner-container">
+                    <div class="cyan-scanner-beam"></div>
+                </div>
+            </div>
+
             <div class="text-center space-y-4 max-w-2xl mx-auto animate-in" style="animation-delay: 0.5s;">
                 <p class="font-mono text-xs md:text-sm tracking-[0.15em] text-cyan uppercase font-semibold">
                     AML RISK • FINANCIAL CRIME • EDD • BLOCKCHAIN COMPLIANCE
@@ -316,7 +292,6 @@
             </div>
         </div>
 
-        <!-- Check My Work CTA -->
         <div class="max-w-7xl mx-auto w-full z-10 pt-8 animate-in" style="animation-delay: 0.7s;">
             <a href="#operator" class="group inline-flex flex-col space-y-3 cursor-pointer mx-auto items-center">
                 <span class="font-mono text-[10px] tracking-[0.25em] text-gray-400 uppercase">
@@ -355,59 +330,62 @@
 
             <div class="grid lg:grid-cols-12 gap-12 items-center">
                 
-                <!-- NEW INTERACTIVE AML UI COMPONENT -->
-                <div class="lg:col-span-5 reveal-up">
-                    <div class="relative aspect-[4/5] bg-surface rounded-2xl overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex items-center justify-center transform-style-3d" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.1">
+                <!-- INTERACTIVE AML UI COMPONENT (Replaces the 2nd Photo) -->
+                <div class="lg:col-span-5 reveal-up h-full min-h-[450px]">
+                    <div class="relative w-full h-full min-h-[450px] bg-[#07080B] rounded-2xl overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex items-center justify-center" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.1" style="transform-style: preserve-3d;">
                         
-                        <!-- Radar Background -->
-                        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.05)_0%,rgba(2,2,4,1)_70%)]"></div>
-                        <div class="absolute inset-0 border-[0.5px] border-cyan/10 rounded-full scale-[1.5] animate-[spinGlobe_20s_linear_infinite]"></div>
-                        <div class="absolute inset-0 border-[0.5px] border-cyan/10 rounded-full scale-[1.0] animate-[spinGlobe_30s_linear_infinite_reverse]"></div>
+                        <!-- Radar Grid Background -->
+                        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,240,255,0.08)_0%,transparent_70%)]"></div>
+                        <div class="absolute inset-0 border border-cyan/10 rounded-full scale-[1.2] animate-[spinGlobe_20s_linear_infinite]" style="border-style: dashed;"></div>
+                        <div class="absolute inset-0 border border-emerald/10 rounded-full scale-[0.8] animate-[spinGlobeReverse_30s_linear_infinite]" style="border-style: dashed;"></div>
                         
-                        <!-- Data Flow SVG -->
-                        <div class="relative w-full h-full pop-out">
-                            <!-- Center Hub -->
-                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border border-cyan/50 bg-cyan/10 flex items-center justify-center animate-pulse z-10">
+                        <!-- Animated Data Flow SVG -->
+                        <div class="relative w-full h-full pop-out flex items-center justify-center">
+                            
+                            <!-- Central Hub -->
+                            <div class="absolute w-16 h-16 rounded-full border border-cyan/50 bg-cyan/10 flex items-center justify-center animate-pulse z-10">
                                 <div class="w-6 h-6 rounded-full bg-cyan shadow-[0_0_20px_rgba(0,240,255,0.8)]"></div>
                             </div>
 
                             <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
                                 <!-- Connecting lines -->
-                                <line x1="50" y1="100" x2="200" y2="250" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" stroke-dasharray="4 4" />
-                                <line x1="350" y1="150" x2="200" y2="250" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" />
-                                <line x1="80" y1="400" x2="200" y2="250" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" />
-                                <line x1="320" y1="420" x2="200" y2="250" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" stroke-dasharray="4 4" />
+                                <line x1="80" y1="100" x2="200" y2="250" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" stroke-dasharray="4 4" />
+                                <line x1="320" y1="120" x2="200" y2="250" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" />
+                                <line x1="100" y1="400" x2="200" y2="250" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" />
+                                <line x1="300" y1="380" x2="200" y2="250" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" stroke-dasharray="4 4" />
                                 
-                                <!-- Animated Nodes tracking funds -->
+                                <!-- Animated Data Packets (Nodes) -->
                                 <circle cx="0" cy="0" r="4" fill="#FF2A5F" filter="drop-shadow(0 0 6px #FF2A5F)">
-                                    <animateMotion path="M 50 100 L 200 250" dur="2s" repeatCount="indefinite" />
+                                    <animateMotion path="M 80 100 L 200 250" dur="2s" repeatCount="indefinite" />
                                 </circle>
                                 <circle cx="0" cy="0" r="3" fill="#00FF88" filter="drop-shadow(0 0 6px #00FF88)">
-                                    <animateMotion path="M 350 150 L 200 250" dur="3.5s" repeatCount="indefinite" />
+                                    <animateMotion path="M 320 120 L 200 250" dur="3.5s" repeatCount="indefinite" />
                                 </circle>
                                 <circle cx="0" cy="0" r="4" fill="#00F0FF" filter="drop-shadow(0 0 6px #00F0FF)">
-                                    <animateMotion path="M 80 400 L 200 250" dur="2.8s" repeatCount="indefinite" />
+                                    <animateMotion path="M 100 400 L 200 250" dur="2.8s" repeatCount="indefinite" />
                                 </circle>
                                 <circle cx="0" cy="0" r="3" fill="#FFB800" filter="drop-shadow(0 0 6px #FFB800)">
-                                    <animateMotion path="M 320 420 L 200 250" dur="4s" repeatCount="indefinite" />
+                                    <animateMotion path="M 300 380 L 200 250" dur="4s" repeatCount="indefinite" />
                                 </circle>
                             </svg>
 
-                            <!-- Floating Glass Panels -->
-                            <div class="absolute top-[15%] left-[5%] bg-black/60 border border-crimson/30 rounded-lg p-3 backdrop-blur-md shadow-xl font-mono text-[9px] text-gray-300 transform translateZ(40px)">
-                                <div class="text-crimson font-bold mb-1">FLAGGED TRX</div>
+                            <!-- Floating Glass Panels with AML Data -->
+                            <div class="absolute top-[15%] left-[5%] bg-black/70 border border-crimson/30 rounded-lg p-3 backdrop-blur-md shadow-xl font-mono text-[10px] text-gray-300 transform translateZ(40px)">
+                                <div class="text-crimson font-bold mb-1 flex items-center gap-1"><span class="w-1.5 h-1.5 bg-crimson rounded-full animate-pulse"></span> FLAGGED TRX</div>
                                 <div>AMT: $4,500,000</div>
                                 <div>ORG: SHELL CORP</div>
                             </div>
-                            <div class="absolute bottom-[20%] right-[5%] bg-black/60 border border-emerald/30 rounded-lg p-3 backdrop-blur-md shadow-xl font-mono text-[9px] text-gray-300 transform translateZ(30px)">
-                                <div class="text-emerald font-bold mb-1">CLEARED SOF</div>
+                            
+                            <div class="absolute bottom-[15%] right-[5%] bg-black/70 border border-emerald/30 rounded-lg p-3 backdrop-blur-md shadow-xl font-mono text-[10px] text-gray-300 transform translateZ(30px)">
+                                <div class="text-emerald font-bold mb-1 flex items-center gap-1"><span class="w-1.5 h-1.5 bg-emerald rounded-full"></span> CLEARED SOF</div>
                                 <div>RISK: LOW</div>
                                 <div>STATUS: VERIFIED</div>
                             </div>
                         </div>
                         
+                        <!-- UI Footer Label -->
                         <div class="absolute bottom-6 left-6 font-mono text-[10px] text-cyan tracking-widest flex items-center gap-2 transform translateZ(20px)">
-                            <span class="w-2 h-2 rounded-full bg-cyan animate-pulse"></span> [ AML_NETWORK_ANALYSIS ]
+                            <span class="w-2 h-2 rounded-full bg-cyan animate-pulse"></span> [ NETWORK_ANALYSIS_UI ]
                         </div>
                     </div>
                 </div>
@@ -674,7 +652,6 @@
                 </p>
             </div>
 
-            <!-- Interactive Email Form Box (Direct Inbox Integration) -->
             <form action="mailto:christopherhanso.aml@gmail.com" method="POST" enctype="text/plain" class="editorial-card p-6 md:p-8 rounded-2xl text-left space-y-4 shadow-2xl" data-tilt data-tilt-max="2" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.1">
                 <div class="font-mono text-xs text-cyan tracking-widest uppercase mb-2 pop-out">SECURE INBOX UPLINK</div>
                 
@@ -698,7 +675,6 @@
                 </div>
             </form>
 
-            <!-- Final Links Row -->
             <div class="pt-12 flex flex-wrap justify-center items-center gap-6 font-mono text-xs tracking-[0.2em] text-gray-400">
                 <a href="https://www.linkedin.com/in/christopher-hanso-cbkp-972ba71a0/" target="_blank" class="hover:text-cyan hover:scale-110 transition-all">LINKEDIN</a>
                 <span class="text-gray-700">•</span>
@@ -713,7 +689,6 @@
 
     <!-- INTERACTIVE SCRIPTS -->
     <script>
-        // Smooth Sparkle Cursor
         const cursor = document.getElementById('cursor');
         window.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
@@ -733,9 +708,6 @@
             });
         });
 
-        // VanillaTilt initialization is handled automatically by data-tilt attributes via CDN script.
-
-        // Scroll Reveal Observer
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
