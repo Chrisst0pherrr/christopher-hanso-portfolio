@@ -89,6 +89,25 @@
             transition: transform 0.3s ease;
         }
 
+        /* Scanning Cyan Line */
+        .scanline-animated {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #00F0FF;
+            box-shadow: 0 0 30px 3px rgba(0,240,255,0.8);
+            z-index: 1;
+            animation: scanVertical 8s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes scanVertical {
+            0% { top: -10%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 110%; opacity: 0; }
+        }
+
         /* CINEMATIC OVERLAPPING HERO COMPOSITION */
         .hero-overlap-container {
             position: relative;
@@ -107,20 +126,17 @@
             100% { transform: translateY(0px) translateZ(50px); }
         }
 
+        /* Hero Photo: Set up for a Transparent Cutout PNG */
         .hero-photo-layer {
             position: absolute;
             z-index: 2; /* In FRONT of solid background text */
-            width: 280px;
-            height: 380px;
-            object-fit: cover;
-            border-radius: 16px;
-            filter: contrast(1.15) saturate(1.05);
-            box-shadow: 0 30px 70px rgba(0,0,0,1);
-            border: 1px solid rgba(255,255,255,0.15);
+            width: 90%;
+            max-width: 450px; /* Made larger and centered */
+            height: auto;
+            object-fit: contain;
+            /* Removed border and background so a transparent PNG creates the magazine effect */
+            filter: drop-shadow(0 30px 40px rgba(0,0,0,0.9));
             animation: cinematicFloat 6s ease-in-out infinite;
-        }
-        @media(min-width: 768px) {
-            .hero-photo-layer { width: 360px; height: 480px; }
         }
 
         /* Typography Styling */
@@ -243,8 +259,8 @@
     <!-- 01 — HERO (Editorial Overlap Composition) -->
     <section id="hero" class="relative min-h-screen flex flex-col justify-between pt-32 pb-16 px-6 md:px-12 overflow-hidden">
         
-        <!-- Horizontal Glowing Cyan Line -->
-        <div class="absolute top-[60%] left-0 w-full h-[2px] bg-cyan shadow-[0_0_30px_3px_rgba(0,240,255,0.8)] z-[1]"></div>
+        <!-- Animated Scanning Cyan Line -->
+        <div class="scanline-animated"></div>
 
         <svg class="rotating-globe hidden lg:block" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="48" fill="none" stroke="#00F0FF" stroke-width="0.3"/>
@@ -277,8 +293,9 @@
                     <h1 class="hero-huge-name">HANSO</h1>
                 </div>
 
-                <!-- 2. The Photo Layer (Middle) with 3D Tilt Physics -->
-                <img src="Photo.jpg" alt="Christopher Hanso" class="hero-photo-layer" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop'" />
+                <!-- 2. The Transparent Photo Layer (Middle) -->
+                <!-- USE A BACKGROUND-LESS PNG FOR THE PERFECT CUTOUT EFFECT -->
+                <img src="Photo-Transparent.png" alt="Christopher Hanso" class="hero-photo-layer" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.1" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop'" />
                 
                 <!-- 3. Foreground Text Layer (Outline, Over Photo) -->
                 <div class="hero-typography-layer text-outline">
@@ -337,12 +354,60 @@
             </div>
 
             <div class="grid lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- NEW INTERACTIVE AML UI COMPONENT -->
                 <div class="lg:col-span-5 reveal-up">
-                    <div class="relative aspect-[4/5] bg-surface rounded-2xl overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)]" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
-                        <img src="Photo.jpg" alt="Christopher Hanso" class="w-full h-full object-cover contrast-110 hover:scale-105 transition-all duration-700" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop'" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#020204] via-transparent to-transparent opacity-80"></div>
+                    <div class="relative aspect-[4/5] bg-surface rounded-2xl overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex items-center justify-center transform-style-3d" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.1">
+                        
+                        <!-- Radar Background -->
+                        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.05)_0%,rgba(2,2,4,1)_70%)]"></div>
+                        <div class="absolute inset-0 border-[0.5px] border-cyan/10 rounded-full scale-[1.5] animate-[spinGlobe_20s_linear_infinite]"></div>
+                        <div class="absolute inset-0 border-[0.5px] border-cyan/10 rounded-full scale-[1.0] animate-[spinGlobe_30s_linear_infinite_reverse]"></div>
+                        
+                        <!-- Data Flow SVG -->
+                        <div class="relative w-full h-full pop-out">
+                            <!-- Center Hub -->
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border border-cyan/50 bg-cyan/10 flex items-center justify-center animate-pulse z-10">
+                                <div class="w-6 h-6 rounded-full bg-cyan shadow-[0_0_20px_rgba(0,240,255,0.8)]"></div>
+                            </div>
+
+                            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+                                <!-- Connecting lines -->
+                                <line x1="50" y1="100" x2="200" y2="250" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" stroke-dasharray="4 4" />
+                                <line x1="350" y1="150" x2="200" y2="250" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" />
+                                <line x1="80" y1="400" x2="200" y2="250" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" />
+                                <line x1="320" y1="420" x2="200" y2="250" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" stroke-dasharray="4 4" />
+                                
+                                <!-- Animated Nodes tracking funds -->
+                                <circle cx="0" cy="0" r="4" fill="#FF2A5F" filter="drop-shadow(0 0 6px #FF2A5F)">
+                                    <animateMotion path="M 50 100 L 200 250" dur="2s" repeatCount="indefinite" />
+                                </circle>
+                                <circle cx="0" cy="0" r="3" fill="#00FF88" filter="drop-shadow(0 0 6px #00FF88)">
+                                    <animateMotion path="M 350 150 L 200 250" dur="3.5s" repeatCount="indefinite" />
+                                </circle>
+                                <circle cx="0" cy="0" r="4" fill="#00F0FF" filter="drop-shadow(0 0 6px #00F0FF)">
+                                    <animateMotion path="M 80 400 L 200 250" dur="2.8s" repeatCount="indefinite" />
+                                </circle>
+                                <circle cx="0" cy="0" r="3" fill="#FFB800" filter="drop-shadow(0 0 6px #FFB800)">
+                                    <animateMotion path="M 320 420 L 200 250" dur="4s" repeatCount="indefinite" />
+                                </circle>
+                            </svg>
+
+                            <!-- Floating Glass Panels -->
+                            <div class="absolute top-[15%] left-[5%] bg-black/60 border border-crimson/30 rounded-lg p-3 backdrop-blur-md shadow-xl font-mono text-[9px] text-gray-300 transform translateZ(40px)">
+                                <div class="text-crimson font-bold mb-1">FLAGGED TRX</div>
+                                <div>AMT: $4,500,000</div>
+                                <div>ORG: SHELL CORP</div>
+                            </div>
+                            <div class="absolute bottom-[20%] right-[5%] bg-black/60 border border-emerald/30 rounded-lg p-3 backdrop-blur-md shadow-xl font-mono text-[9px] text-gray-300 transform translateZ(30px)">
+                                <div class="text-emerald font-bold mb-1">CLEARED SOF</div>
+                                <div>RISK: LOW</div>
+                                <div>STATUS: VERIFIED</div>
+                            </div>
+                        </div>
+                        
                         <div class="absolute bottom-6 left-6 font-mono text-[10px] text-cyan tracking-widest flex items-center gap-2 transform translateZ(20px)">
-                            <span class="w-2 h-2 rounded-full bg-emerald animate-pulse"></span> [ CH_AML_PROFILE_VERIFIED ]
+                            <span class="w-2 h-2 rounded-full bg-cyan animate-pulse"></span> [ AML_NETWORK_ANALYSIS ]
                         </div>
                     </div>
                 </div>
@@ -669,22 +734,6 @@
         });
 
         // VanillaTilt initialization is handled automatically by data-tilt attributes via CDN script.
-        
-        // Scroll Parallax for Hero Photo
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const heroPhoto = document.querySelector('.hero-photo-layer');
-            const heroText = document.querySelectorAll('.hero-typography-layer');
-            
-            if(heroPhoto && scrollY < 800) {
-                heroPhoto.style.transform = `translateY(${scrollY * 0.15}px) translateZ(50px)`;
-            }
-            heroText.forEach(layer => {
-                if(scrollY < 800) {
-                     layer.style.transform = `translateY(${scrollY * 0.3}px)`;
-                }
-            });
-        });
 
         // Scroll Reveal Observer
         const observerOptions = {
