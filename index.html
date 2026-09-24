@@ -85,18 +85,18 @@
             transition: transform 0.3s ease;
         }
 
-        /* SCANNING CYAN LINE - Moving horizontally across the display */
+        /* SCANNING CYAN LINE - Moving horizontally */
         @keyframes scanHorizontal {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100vw); }
         }
         .cyan-scanner-container {
             position: absolute;
-            bottom: -20px; /* Adjust based on hero layout */
+            bottom: 0; 
             left: 0;
             width: 100%;
             height: 2px;
-            background: rgba(0, 240, 255, 0.1); /* Dim track */
+            background: rgba(0, 240, 255, 0.1); 
             z-index: 5;
             overflow: hidden;
         }
@@ -104,86 +104,105 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 300px;
+            width: 400px;
             height: 100%;
             background: #00F0FF;
-            box-shadow: 0 0 25px 5px rgba(0,240,255,1);
+            box-shadow: 0 0 30px 5px rgba(0,240,255,1);
             animation: scanHorizontal 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
-        /* CINEMATIC HERO COMPOSITION */
+        /* HERO UI GRID & ANIMATIONS */
+        .hero-bg-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            pointer-events: none;
+        }
+        @keyframes floatingData {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
+        }
+
+        /* CINEMATIC HERO COMPOSITION (FIXED OVERLAP) */
         .hero-overlap-container {
             position: relative;
             width: 100%;
-            min-height: 650px;
+            min-height: 700px; /* Taller for dramatic effect */
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        
-        .hero-huge-name {
-            font-size: clamp(3.5rem, 15vw, 13rem); /* Massive scaling */
-            font-weight: 900;
-            letter-spacing: -0.05em;
-            line-height: 0.85;
-            text-transform: uppercase;
-            color: #FFFFFF;
-            text-shadow: 0 10px 40px rgba(0,0,0,0.8);
-            margin: 0;
-            padding: 0;
-            text-align: center;
-            white-space: nowrap;
-            transition: all 0.5s ease;
-        }
 
-        /* Name Hover FX */
-        .name-wrapper {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1; /* Behind Photo */
-        }
-        .name-wrapper:hover .hero-huge-name {
-            letter-spacing: 0.01em;
-            color: #00F0FF;
-            text-shadow: 0 0 50px rgba(0,240,255,0.8), 0 0 100px rgba(255,42,95,0.5);
-            transform: scale(1.02);
-        }
-
-        /* The Photo styling - Large, Rectangular, Left-Aligned */
+        /* The Photo styling - Left Aligned, Z-Index 10 */
         .hero-photo-container {
             position: absolute;
-            left: 5%; /* Shifted to the left */
-            z-index: 10; /* OVER the text */
-            width: 35%;
-            min-width: 300px;
-            max-width: 500px;
+            left: 10%; 
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10; 
+            width: 30%;
+            min-width: 320px;
+            max-width: 450px;
         }
-
         .hero-photo-layer {
             width: 100%;
             height: auto;
             aspect-ratio: 3/4;
             object-fit: cover;
-            border-radius: 20px;
-            box-shadow: 0 35px 70px rgba(0,0,0,0.95);
+            border-radius: 24px;
+            box-shadow: 0 40px 80px rgba(0,0,0,1);
             border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Name Wrapper - Shifted Right, Z-Index 20 (OVERLAPPING PHOTO) */
+        .name-wrapper {
+            position: absolute;
+            left: 30%; /* Pushes it over the right half of the photo */
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20; /* IN FRONT OF PHOTO */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start; /* Left align the text box itself */
+        }
+        
+        .hero-huge-name {
+            font-size: clamp(4rem, 16vw, 15rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            line-height: 0.82;
+            text-transform: uppercase;
+            color: #FFFFFF;
+            text-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            margin: 0;
+            padding: 0;
+            white-space: nowrap;
+            transition: all 0.5s ease;
+        }
+
+        .name-wrapper:hover .hero-huge-name {
+            letter-spacing: -0.02em;
+            color: #00F0FF;
+            text-shadow: 0 0 60px rgba(0,240,255,0.8), 0 0 120px rgba(255,42,95,0.4);
         }
 
         /* Rotating 3D Globe Background */
         .rotating-globe {
             position: absolute;
-            right: 0%;
-            top: 5%;
-            width: 600px;
-            height: 600px;
-            opacity: 0.15;
+            right: -10%;
+            top: 10%;
+            width: 800px;
+            height: 800px;
+            opacity: 0.1;
             pointer-events: none;
-            z-index: 0;
-            animation: spinGlobe 40s linear infinite;
+            z-index: 1;
+            animation: spinGlobe 60s linear infinite;
         }
         @keyframes spinGlobe { 100% { transform: rotate(360deg); } }
         @keyframes spinGlobeReverse { 100% { transform: rotate(-360deg); } }
@@ -236,15 +255,21 @@
         </div>
     </nav>
 
-    <!-- 01 — HERO (Magazine Overlap Composition) -->
+    <!-- 01 — HERO (Magazine Overlap Composition & Interactive UI) -->
     <section id="hero" class="relative min-h-screen flex flex-col justify-between pt-32 pb-16 px-6 md:px-12 overflow-hidden">
         
+        <!-- Interactive UI Grid & Floating Data -->
+        <div class="hero-bg-grid"></div>
+        <div class="absolute top-[30%] left-[60%] w-2 h-2 bg-cyan rounded-full shadow-[0_0_10px_#00F0FF]" style="animation: floatingData 4s infinite 0.5s;"></div>
+        <div class="absolute top-[60%] left-[80%] w-2 h-2 bg-crimson rounded-full shadow-[0_0_10px_#FF2A5F]" style="animation: floatingData 5s infinite 1.2s;"></div>
+        <div class="absolute top-[20%] left-[20%] w-2 h-2 bg-emerald rounded-full shadow-[0_0_10px_#00FF88]" style="animation: floatingData 6s infinite 0s;"></div>
+
         <svg class="rotating-globe hidden md:block" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="48" fill="none" stroke="#00F0FF" stroke-width="0.3"/>
-            <ellipse cx="50" cy="50" rx="20" ry="48" fill="none" stroke="#00F0FF" stroke-width="0.3"/>
-            <ellipse cx="50" cy="50" rx="48" ry="20" fill="none" stroke="#00F0FF" stroke-width="0.3"/>
-            <line x1="50" y1="2" x2="50" y2="98" stroke="#00F0FF" stroke-width="0.3"/>
-            <line x1="2" y1="50" x2="98" y2="50" stroke="#00F0FF" stroke-width="0.3"/>
+            <circle cx="50" cy="50" r="48" fill="none" stroke="#00F0FF" stroke-width="0.2"/>
+            <ellipse cx="50" cy="50" rx="20" ry="48" fill="none" stroke="#00F0FF" stroke-width="0.2"/>
+            <ellipse cx="50" cy="50" rx="48" ry="20" fill="none" stroke="#00F0FF" stroke-width="0.2"/>
+            <line x1="50" y1="2" x2="50" y2="98" stroke="#00F0FF" stroke-width="0.2"/>
+            <line x1="2" y1="50" x2="98" y2="50" stroke="#00F0FF" stroke-width="0.2"/>
         </svg>
 
         <div class="max-w-7xl mx-auto w-full z-10 space-y-8 my-auto relative">
@@ -262,27 +287,27 @@
             <!-- Interlocking Name and Photo Layer -->
             <div class="hero-overlap-container animate-in" style="animation-delay: 0.3s;">
                 
-                <!-- BACKGROUND TEXT (Centered) -->
-                <div class="name-wrapper w-full">
-                    <h1 class="hero-huge-name">CHRISTOPHER</h1>
-                    <h1 class="hero-huge-name">HANSO</h1>
+                <!-- PHOTO (Z-Index 10, Left side) -->
+                <div class="hero-photo-container" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
+                    <img src="Photo.jpg" alt="Christopher Hanso" class="hero-photo-layer" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop'" />
                 </div>
 
-                <!-- ENLARGED PHOTO (Left-Aligned, Overlapping the text) -->
-                <div class="hero-photo-container" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
-                    <img src="Photo.jpg" alt="Christopher Hanso" class="hero-photo-layer" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop'" />
+                <!-- TEXT OVERLAPPING PHOTO (Z-Index 20, Shifted Right) -->
+                <div class="name-wrapper" data-tilt data-tilt-max="3" data-tilt-speed="600">
+                    <h1 class="hero-huge-name">CHRISTOPHER</h1>
+                    <h1 class="hero-huge-name">HANSO</h1>
                 </div>
                 
             </div>
 
             <!-- ANIMATED HORIZONTAL CYAN LINE -->
-            <div class="relative w-full py-10 animate-in" style="animation-delay: 0.4s;">
+            <div class="relative w-full py-6 animate-in" style="animation-delay: 0.4s;">
                 <div class="cyan-scanner-container">
                     <div class="cyan-scanner-beam"></div>
                 </div>
             </div>
 
-            <div class="text-center space-y-4 max-w-2xl mx-auto animate-in" style="animation-delay: 0.5s;">
+            <div class="text-center space-y-4 max-w-2xl mx-auto animate-in pt-8" style="animation-delay: 0.5s;">
                 <p class="font-mono text-xs md:text-sm tracking-[0.15em] text-cyan uppercase font-semibold">
                     AML RISK • FINANCIAL CRIME • EDD • BLOCKCHAIN COMPLIANCE
                 </p>
@@ -695,7 +720,7 @@
             cursor.style.top = e.clientY + 'px';
         });
 
-        document.querySelectorAll('a, button, .editorial-card').forEach(el => {
+        document.querySelectorAll('a, button, .editorial-card, .name-wrapper').forEach(el => {
             el.addEventListener('mouseenter', () => {
                 cursor.style.width = '24px';
                 cursor.style.height = '24px';
