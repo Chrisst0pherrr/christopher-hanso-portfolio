@@ -25,7 +25,7 @@
                         base: '#020204',
                         surface: '#07080B',
                         card: '#0B0D11',
-                        olive: '#C1B07C', /* Replaced Cyan with Olive Gold */
+                        olive: '#C1B07C',
                         crimson: '#FF2A5F',
                         emerald: '#00FF88',
                         amber: '#FFB800',
@@ -68,24 +68,46 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        /* 3D Editorial Cards */
+        /* 3D Editorial Cards with Interactive UI Spotlight */
         .editorial-card {
             background: linear-gradient(135deg, #0B0D11 0%, #07080B 100%);
             border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
             transform-style: preserve-3d;
             transition: border-color 0.4s ease, box-shadow 0.4s ease;
+            overflow: hidden;
         }
         .editorial-card:hover {
             border-color: rgba(193, 176, 124, 0.5);
             box-shadow: 0 30px 60px -15px rgba(193, 176, 124, 0.15);
         }
+        /* Dynamic Spotlight Effect on Cards */
+        .editorial-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.08), transparent 40%);
+            z-index: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .editorial-card:hover::after {
+            opacity: 1;
+        }
+        /* Ensure content stays above spotlight */
+        .editorial-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
         .pop-out {
             transform: translateZ(30px);
             transition: transform 0.3s ease;
         }
 
-        /* SCANNING OLIVE LINE - Moving horizontally */
+        /* SCANNING OLIVE LINE */
         @keyframes scanHorizontal {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100vw); }
@@ -128,17 +150,17 @@
             100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
         }
 
-        /* CINEMATIC HERO COMPOSITION (FIXED OVERLAP) */
+        /* CINEMATIC HERO COMPOSITION */
         .hero-overlap-container {
             position: relative;
             width: 100%;
-            min-height: 700px; /* Taller for dramatic effect */
+            min-height: 700px; 
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* The Photo styling - Left Aligned, Z-Index 10 */
+        /* The Photo styling */
         .hero-photo-container {
             position: absolute;
             left: 10%; 
@@ -159,17 +181,27 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Name Wrapper - Shifted Right, Z-Index 20 (OVERLAPPING PHOTO) */
+        /* NAME WRAPPER: Silver Text + Glass Surround Effect */
         .name-wrapper {
             position: absolute;
-            left: 30%; /* Pushes it over the right half of the photo */
+            left: 30%; 
             top: 50%;
             transform: translateY(-50%);
-            z-index: 20; /* IN FRONT OF PHOTO */
+            z-index: 20; 
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: flex-start; /* Left align the text box itself */
+            align-items: flex-start; 
+            
+            /* Glass Effect All Around */
+            padding: 2rem 3.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 0 30px rgba(255,255,255,0.05);
+            transition: all 0.5s ease;
         }
         
         .hero-huge-name {
@@ -178,18 +210,27 @@
             letter-spacing: -0.05em;
             line-height: 0.82;
             text-transform: uppercase;
-            color: #FFFFFF;
-            text-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            
+            /* Glowing Silver Effect */
+            background: linear-gradient(180deg, #FFFFFF 0%, #A0A5B0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(220, 230, 240, 0.5));
+            
             margin: 0;
             padding: 0;
             white-space: nowrap;
             transition: all 0.5s ease;
         }
 
+        .name-wrapper:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8), inset 0 0 40px rgba(255,255,255,0.1);
+        }
         .name-wrapper:hover .hero-huge-name {
             letter-spacing: -0.02em;
-            color: #C1B07C;
-            text-shadow: 0 0 60px rgba(193,176,124,0.8), 0 0 120px rgba(255,42,95,0.4);
+            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.9));
         }
 
         /* Rotating 3D Globe Background */
@@ -292,7 +333,7 @@
                     <img src="Photo.jpg" alt="Christopher Hanso" class="hero-photo-layer" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop'" />
                 </div>
 
-                <!-- TEXT OVERLAPPING PHOTO (Z-Index 20, Shifted Right) -->
+                <!-- SILVER GLASS NAME WRAPPER (Z-Index 20, Shifted Right) -->
                 <div class="name-wrapper" data-tilt data-tilt-max="3" data-tilt-speed="600">
                     <h1 class="hero-huge-name">CHRISTOPHER</h1>
                     <h1 class="hero-huge-name">HANSO</h1>
@@ -355,7 +396,7 @@
 
             <div class="grid lg:grid-cols-12 gap-12 items-center">
                 
-                <!-- INTERACTIVE AML UI COMPONENT (Replaces the 2nd Photo) -->
+                <!-- INTERACTIVE AML UI COMPONENT -->
                 <div class="lg:col-span-5 reveal-up h-full min-h-[450px]">
                     <div class="relative w-full h-full min-h-[450px] bg-[#07080B] rounded-2xl overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex items-center justify-center" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.1" style="transform-style: preserve-3d;">
                         
@@ -720,7 +761,29 @@
             cursor.style.top = e.clientY + 'px';
         });
 
-        document.querySelectorAll('a, button, .editorial-card, .name-wrapper').forEach(el => {
+        // Mouse Spotlight Effect for Editorial Cards
+        document.querySelectorAll('.editorial-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+            
+            card.addEventListener('mouseenter', () => {
+                cursor.style.width = '24px';
+                cursor.style.height = '24px';
+                cursor.style.background = '#FF2A5F';
+            });
+            card.addEventListener('mouseleave', () => {
+                cursor.style.width = '12px';
+                cursor.style.height = '12px';
+                cursor.style.background = '#C1B07C';
+            });
+        });
+        
+        document.querySelectorAll('a, button, .name-wrapper').forEach(el => {
             el.addEventListener('mouseenter', () => {
                 cursor.style.width = '24px';
                 cursor.style.height = '24px';
